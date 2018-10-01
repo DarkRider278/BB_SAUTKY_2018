@@ -1,0 +1,74 @@
+object System: TccContainer
+  Caption = 'System'
+  TabVisible = False
+  object ApplicationEvents: TptApplicationEvents
+    Left = 279
+    Top = 77
+    EventDataNames = 
+      'OnRunMode=System_ApplicationEventsRunMode,OnTVConnectionChange=S' +
+      'ystem_ApplicationEventsTVConnectionChange,OnTVDialogClose=System' +
+      '_ApplicationEventsTVConnectionChange'
+  end
+  object BdeDataSource1: TptBdeDataSource
+    Active = False
+    DatabasePath = 'D:\TSP_BK_AUSTRIA'
+    SQL = 'SELECT * FROM TEAMS WHERE league_id='#39'1'#39#13#10
+    Filtered = False
+    RequestLive = False
+    Left = 235
+    Top = 80
+  end
+  object hot_DSS: TptScriptHotkey
+    Hotkey.ShortKeyCode = 32
+    Hotkey.Shift = [ssCtrl]
+    Hotkey.IsLong = False
+    Hotkey.Description = 'Show or Hide DSS'
+    Hotkey.Enabled = True
+    Left = 410
+    Top = 75
+    EventDataNames = 'OnExecute=System_hot_DSSExecute'
+  end
+  object UDP_CLOCK: TptUDPClientInterface
+    Active = False
+    RemotePort = 5678
+    LocalPort = 1234
+    Host = '192.168.101.19'
+    EnableBroadcast = False
+    Left = 240
+    Top = 205
+    EventDataNames = 
+      'OnSocketClosed=System_UDP_CLOCKSocketClosed,OnSocketOpened=Syste' +
+      'm_UDP_CLOCKSocketClosed'
+  end
+  object MIC_PARSER: TptProtocolParser
+    DataInterface = UDP_CLOCK
+    ParseProtocol = True
+    BOP = #2
+    EOP = #3
+    Active = True
+    SynchronizeEvents = False
+    Left = 280
+    Top = 205
+    EventDataNames = 'OnProtocol=ParseMICProt'
+  end
+  object hot_clear: TptScriptHotkey
+    Hotkey.LongKeyData = '99'
+    Hotkey.Shift = [ssCtrl]
+    Hotkey.IsLong = True
+    Hotkey.Description = 'Clear All'
+    Hotkey.Enabled = True
+    Left = 410
+    Top = 115
+    EventDataNames = 'OnExecute=System_hot_clearExecute'
+  end
+  object hot_Sponsor: TptScriptHotkey
+    Hotkey.ShortKeyCode = 83
+    Hotkey.Shift = [ssCtrl]
+    Hotkey.IsLong = False
+    Hotkey.Description = 'Show Sponsor'
+    Hotkey.Enabled = True
+    Left = 450
+    Top = 75
+    EventDataNames = 'OnExecute=pgMain_bt_SponsorClick'
+  end
+end

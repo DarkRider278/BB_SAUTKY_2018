@@ -1,0 +1,11 @@
+<script>
+<script_header>
+</script_header>
+<script_body>
+
+sub tw_crawl_speichern_bt_showClick (Sender)
+    AllTV.TV__BB_Crawl tw_crawl.ed_title.text, tw_crawl.ed_text.text, tw_crawl.cb_loop.checked, tw_crawl.TrackBar1.position
+end sub
+
+</script_body>
+</script>

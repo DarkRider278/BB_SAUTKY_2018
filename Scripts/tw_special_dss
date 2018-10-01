@@ -1,0 +1,78 @@
+<script>
+<script_header>
+</script_header>
+<script_body>
+dim dss_s_cont
+sub tw_special_dss_bt_clockClick (Sender)
+    dim Data : set Data = CreateObject("Scripting.Dictionary")
+    Data.Item("HL")  = tw_special_dss.tb_headline.Text
+    Data.Item("NAMEA")  = tw_special_dss.ed_shortname_a.Text
+    Data.Item("NAMEB")  = tw_special_dss.ed_shortname_b.Text
+    Data.Item("SCOREA")  = tw_special_dss.tb_score_a.Text
+    Data.Item("SCOREB")  = tw_special_dss.tb_score_b.Text
+    Data.Item("TIME")  = tw_special_dss.tb_time.Text
+    AllTV.TV__DSSSpecial Data
+    tw_special_dss.bt_clock1.Down = false
+    tw_special_dss.bt_clock1.Caption="Start Clock"
+    dss_s_cont =false
+end sub
+
+sub tw_special_dss_btn_score_a_upClick (Sender)
+    dim i
+    i=tw_special_dss.tb_score_a.Text
+    i=i+1
+    tw_special_dss.tb_score_a.Text=i
+    AllTV.TV__DSSSpecialSetScore "Heim",i
+
+end sub
+
+sub tw_special_dss_btn_score_a_downClick (Sender)
+    dim i
+    i=tw_special_dss.tb_score_a.Text
+    if i>0 then
+        i=i-1
+        tw_special_dss.tb_score_a.Text=i
+        AllTV.TV__DSSSpecialSetScore "Heim",i
+    end if
+end sub
+
+sub tw_special_dss_btn_score_b_upClick (Sender)
+    dim i
+    i=tw_special_dss.tb_score_b.Text
+    i=i+1
+    tw_special_dss.tb_score_b.Text=i
+    AllTV.TV__DSSSpecialSetScore "Gast",i
+end sub
+
+sub tw_special_dss_btn_score_b_downClick (Sender)
+     dim i
+    i=tw_special_dss.tb_score_b.Text
+    if i >0  then
+        i=i-1
+        tw_special_dss.tb_score_b.Text=i
+        AllTV.TV__DSSSpecialSetScore "Gast",i
+    end if
+end sub
+
+sub tw_special_dss_bt_clock1Click (Sender)
+    if tw_special_dss.bt_clock1.Down = true then
+        if dss_s_cont = true then
+            AllTV.TV__DSSSpecialCont
+        else
+            AllTV.TV__DSSSpecialStart
+            dss_s_cont=true
+        end if
+        tw_special_dss.bt_clock1.Caption="Pause Clock"
+    else
+        AllTV.TV__DSSSpecialStop
+        tw_special_dss.bt_clock1.Caption="Start Clock"
+    end if
+end sub
+
+sub tw_special_dss_btn_copyClick (Sender)
+  tw_special_dss.tb_score_b.text=  tw_special_dss.tb_score_a.text
+    tw_special_dss.ed_shortname_b.text=  tw_special_dss.ed_shortname_a.text
+end sub
+
+</script_body>
+</script>

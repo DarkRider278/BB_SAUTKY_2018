@@ -1,0 +1,84 @@
+<script>
+<script_header>
+</script_header>
+<script_body>
+
+sub tw_dss_info_bt_showClick (Sender)
+    dim Data : Set Data = CreateObject("Scripting.Dictionary")
+    if sender.down then
+        Data.Item("NAME")      =  ""'tw_dss_info.ed_Name.text
+        Data.Item("NR")      =  ""'tw_dss_info.ed_nr.text
+        Data.Item("INFO")      =  tw_dss_info.ed_info.text
+        Data.Item("LOGO")      =  tw_dss_info.cb_logo.Text
+        AllTV.TV__DSS_Info_Show(Data)
+     else
+        Data.Item("NR")      =  tw_dss_info.ed_nr.text
+        AllTV.TV__DSS_Info_Hide(Data)
+     end if
+end sub
+
+sub tw_dss_info_bt_hideClick (Sender)
+    dim Data : Set Data = CreateObject("Scripting.Dictionary")
+    Data.Item("NR")      =  tw_dss_info.ed_nr.text
+     AllTV.TV__Hide_DSS_Info(Data)
+end sub
+
+sub tw_dss_info_rg_statClick (Sender)
+    dim stat
+    dim sname
+    dim info
+    stat=tw_dss_info.rg_stat.ItemIndex
+    sname= tw_dss_info.rg_stat.Items.Strings(stat)
+    if stat = 9 then
+        if tw_dss_info.cb_team.Checked =true then
+            info=tw_dss_info.ed_team_long.text& ": "&tw_dss_info.ComponentByName("ed_stat_04").text&" PTS; "& tw_dss_info.ComponentByName("ed_stat_02").text&" FG"
+        else
+            info=tw_dss_info.ed_Name.text&" ("& tw_dss_info.ed_team_short.text& "): "&tw_dss_info.ComponentByName("ed_stat_04").text&" PTS; "& tw_dss_info.ComponentByName("ed_stat_02").text&" FG"
+        end if
+    elseif stat = 10 then
+        if tw_dss_info.cb_team.Checked =true then
+            info=tw_dss_info.ed_team_long.text& ": "&tw_dss_info.ComponentByName("ed_stat_04").text&" PTS; "& tw_dss_info.ComponentByName("ed_stat_06").text&" REB"
+        else
+            info=tw_dss_info.ed_Name.text&" ("& tw_dss_info.ed_team_short.text& "): "&tw_dss_info.ComponentByName("ed_stat_04").text&" PTS; "& tw_dss_info.ComponentByName("ed_stat_06").text&" REB"
+        end if
+    elseif stat = 11 then
+        if tw_dss_info.cb_team.Checked =true then
+            info=tw_dss_info.ed_team_long.text& ": "&tw_dss_info.ComponentByName("ed_stat_04").text&" PTS; "& tw_dss_info.ComponentByName("ed_stat_01").text&" 3P"
+        else
+            info=tw_dss_info.ed_Name.text&" ("& tw_dss_info.ed_team_short.text& "): "&tw_dss_info.ComponentByName("ed_stat_04").text&" PTS; "& tw_dss_info.ComponentByName("ed_stat_01").text&" 3P"
+        end if
+    else
+        if tw_dss_info.cb_team.Checked =true then
+            info=tw_dss_info.ed_team_long.text& ": "&tw_dss_info.ComponentByName("ed_stat_0"&stat).text&" "& sname
+        else
+            info=tw_dss_info.ed_Name.text&" ("& tw_dss_info.ed_team_short.text& "): "&tw_dss_info.ComponentByName("ed_stat_0"&stat).text&" "& sname
+        end if
+    end if
+    tw_dss_info.ed_info.Text=info
+end sub
+
+sub tw_dss_info_cb_teamClick (Sender)
+    if tw_dss_info.cb_team.Checked then
+        tw_dss_info.rg_stat.Items.Strings(5)="Blocks"
+        tw_dss_info.rg_stat.Items.Strings(6)="Rebounds"
+        tw_dss_info.rg_stat.Items.Strings(7)="Steals"
+        tw_dss_info.rg_stat.Items.Strings(8)="Assists"
+    else
+        tw_dss_info.rg_stat.Items.Strings(5)="BLK"
+        tw_dss_info.rg_stat.Items.Strings(6)="REB"
+        tw_dss_info.rg_stat.Items.Strings(7)="STL"
+        tw_dss_info.rg_stat.Items.Strings(8)="ASS"
+    end if
+    tw_dss_info_rg_statClick (Sender)
+end sub
+
+sub tw_dss_info_btn_copyClick (Sender)
+    tw_info2.ed_info.Text=tw_dss_info.ed_info.Text
+end sub
+
+sub tw_dss_info_DataBar1DataChange (Sender, ComboText)
+  tw_dss_info_rg_statClick (Sender)
+end sub
+
+</script_body>
+</script>

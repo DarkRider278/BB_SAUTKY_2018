@@ -1,0 +1,48 @@
+<script>
+<script_header>
+</script_header>
+<script_body>
+sub tw_commentBB_cb_fotoClick (Sender)
+    tw_commentBB.ComboBox1.Enabled = Sender.Checked
+end sub
+
+sub tw_commentBB_bt_show_commentClick (Sender)
+    dim foto
+    dim foto2
+    dim p
+    if tw_commentBB.cb_foto.Checked then
+        foto = tw_commentBB.ComboBox1.Text
+        foto2 = tw_commentBB.ComboBox2.Text
+    else
+        foto = ""
+        foto2=""
+    end if
+    dim n ,i,n2,k
+    n=tw_commentBB.ed_Name.Text
+    i=cc.Strings.StrPos(" ",n)
+    for p=0 to len(n)
+        if mid(n,p+1,1)=" " then i=p
+    next
+    n2=tw_commentBB.ed_Name1.Text
+    k=cc.Strings.StrPos(" ",n2)
+    for p=0 to len(n2)
+        if mid(n2,p+1,1)=" " then k=p
+    next
+
+    if tw_commentBB.cb_2comment.Checked then
+        AllTV.TV__BB_comment2 Trim(right(n,len(n)-i)), foto , tw_commentBB.ed_info.Text,Trim(right(n2,len(n2)-k)), foto2 , tw_commentBB.ed_subline1.Text ,Trim(left(n,i)),Trim(left(n2,k))
+    else
+        AllTV.TV__BB_comment Trim(right(n,len(n)-i)), foto , tw_commentBB.ed_info.Text ,Trim(left(n,i) )
+    end if
+
+end sub
+
+sub tw_commentBB_Close (Sender)
+  ' script tw_commentBB_Close generated on 02/05/2017 at 16:27:54
+  ' description of params:
+  ' Sender as IccToolWindow
+
+end sub
+
+</script_body>
+</script>

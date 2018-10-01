@@ -1,0 +1,19 @@
+<script>
+<script_header>
+</script_header>
+<script_body>
+
+sub pgMain_cb_bb_typChange (Sender)
+  if tw_PlayerBB.cb_bb_typ.ItemIndex = 1 then
+        tw_PlayerBB.Memo1.lines.clear()
+        tw_PlayerBB.Memo1.Lines.Add("@skysportaustria")
+    end if
+    if tw_PlayerBB.cb_bb_typ.ItemIndex = 2 then
+        tw_PlayerBB.Memo1.lines.clear()
+        tw_PlayerBB.Memo1.Lines.Add("skysportaustria")
+    end if
+
+end sub
+
+</script_body>
+</script>

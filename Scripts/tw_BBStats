@@ -1,0 +1,121 @@
+<script>
+<script_header>
+</script_header>
+<script_body>
+
+sub tw_BBStats_list2Click (Sender)
+  if Sender.ItemIndex <> -1 then
+        tw_BBStats.db_bbstats.LoadData tw_BBStats.list.Items.Strings(Sender.itemindex)
+    end if
+end sub
+
+sub tw_BBStats_list2DblClick (Sender)
+    call tw_BBStats_list2Click (Sender)
+    tw_BBStats_bt_show_match_statsClick (Sender)
+end sub
+
+sub tw_BBStats_bt_show_match_statsClick (Sender)
+    dim Data : Set Data = CreateObject("Scripting.Dictionary")
+    dim i:i=0
+    if tw_BBStats.stats.Cells(0,0) <> "" then
+        i=i+1
+        Data.Item("TEXT"&i)  = tw_BBStats.cb_stat_1.Text
+        Data.Item("VALUE"&i) = tw_BBStats.stats.Cells(0,0)
+        Data.item("HL"&i) = tw_BBStats.cb_hl_1.Checked
+    end if
+     if tw_BBStats.stats.Cells(1,0) <> "" then
+        i=i+1
+        Data.Item("TEXT"&i)  = tw_BBStats.cb_stat_2.Text
+        Data.Item("VALUE"&i) = tw_BBStats.stats.Cells(1,0)
+        Data.item("HL"&i) = tw_BBStats.cb_hl_2.Checked
+    end if
+     if tw_BBStats.stats.Cells(2,0) <> "" then
+        i=i+1
+        Data.Item("TEXT"&i)  = tw_BBStats.cb_stat_3.Text
+        Data.Item("VALUE"&i) = tw_BBStats.stats.Cells(2,0)
+        Data.item("HL"&i) = tw_BBStats.cb_hl_3.Checked
+    end if
+     if tw_BBStats.stats.Cells(3,0) <> "" then
+        i=i+1
+        Data.Item("TEXT"&i)  = tw_BBStats.cb_stat_4.Text
+        Data.Item("VALUE"&i) = tw_BBStats.stats.Cells(3,0)
+        Data.item("HL"&i) = tw_BBStats.cb_hl_4.Checked
+    end if
+     if tw_BBStats.stats.Cells(4,0) <> "" then
+        i=i+1
+        Data.Item("TEXT"&i)  = tw_BBStats.cb_stat_5.Text
+        Data.Item("VALUE"&i) = tw_BBStats.stats.Cells(4,0)
+        Data.item("HL"&i) = tw_BBStats.cb_hl_5.Checked
+    end if
+     if tw_BBStats.stats.Cells(5,0) <> "" then
+        i=i+1
+        Data.Item("TEXT"&i)  = tw_BBStats.cb_stat_6.Text
+        Data.Item("VALUE"&i) = tw_BBStats.stats.Cells(5,0)
+        Data.item("HL"&i) = tw_BBStats.cb_hl_6.Checked
+    end if
+    
+    Data.Item("NR") = tw_BBStats.ed_nr.Text
+    Data.Item("NAME")   = tw_BBStats.ed_Name.Text
+    Data.Item("FNAME")   = tw_BBStats.ed_FName.Text
+    Data.Item("LOGO")   = tw_BBStats.cb_logo.text
+    Data.Item("NOTE")   = tw_BBStats.ed_note.text
+    Data.Item("ITEMCOUNT") = i
+    AllTV.TV__BB_PlayerStats Data
+    set Data = Nothing
+end sub
+
+sub tw_BBStats_DataBar1BeforeDataDelete (Sender, ComboText)
+    if tw_BBStats.list.Items.IndexOf(ComboText) <> -1 then
+        tw_BBStats.list.Items.Delete(tw_BBStats.list.Items.IndexOf(ComboText))
+    end if
+end sub
+
+sub tw_BBStats_DataBar1BeforeDataSave (Sender, ComboText)
+    if tw_BBStats.list.Items.IndexOf(ComboText) = -1 then
+        tw_BBStats.list.Items.add ComboText
+    end if
+end sub
+
+sub tw_BBStats_DataBar1DeleteClick (Sender)
+    dim i
+    tw_BBStats.list.Items.Clear
+    for i = 0 to tw_BBStats.db_bbstats.DataItemCount
+        tw_BBStats.list.Items.Add tw_BBStats.db_bbstats.DataItems(i)
+    next
+end sub
+
+sub tw_BBStats_bt_saveClick (Sender)
+    tw_BBStats.db_bbstats.SaveData tw_BBStats.ed_Name.Text
+    dim i
+    tw_BBStats.list.Items.Clear
+    for i = 0 to tw_BBStats.db_bbstats.DataItemCount
+        tw_BBStats.list.Items.Add tw_BBStats.db_bbstats.DataItems(i)
+    next
+end sub
+
+sub pgMain_down1Click (Sender)
+    dim id : id = right(Sender.Name,1)
+    dim tmp,tmp2,tmp3
+    tmp=tw_BBStats.ComponentByName("cb_stat_" & id+1).Text
+    tw_BBStats.ComponentByName("cb_stat_" & id+1).Text =tw_BBStats.ComponentByName("cb_stat_" & id).Text
+    tw_BBStats.ComponentByName("cb_stat_" & id).Text=tmp
+    id=id-1
+    tmp=tw_BBStats.stats.Cells(id+1,0)
+    tw_BBStats.stats.Cells(id+1,0)=tw_BBStats.stats.Cells(id,0)
+    tw_BBStats.stats.Cells(id,0)=tmp
+end sub
+
+sub pgMain_up2Click (Sender)
+dim id : id = right(Sender.Name,1)
+    dim tmp,tmp2,tmp3
+    tmp=tw_BBStats.ComponentByName("cb_stat_" & id-1).Text
+    tw_BBStats.ComponentByName("cb_stat_" & id-1).Text =tw_BBStats.ComponentByName("cb_stat_" & id).Text
+    tw_BBStats.ComponentByName("cb_stat_" & id).Text=tmp
+    id=id-1
+    tmp=tw_BBStats.stats.Cells(id-1,0)
+    tw_BBStats.stats.Cells(id-1,0)=tw_BBStats.stats.Cells(id,0)
+    tw_BBStats.stats.Cells(id,0)=tmp
+end sub
+
+</script_body>
+</script>

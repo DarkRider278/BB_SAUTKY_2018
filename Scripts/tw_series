@@ -1,0 +1,53 @@
+<script>
+<script_header>
+</script_header>
+<script_body>
+
+sub tw_series_bt_importClick (Sender)
+    dim i : i = 0
+    dim won_a, won_b
+    tw_series.Grid.Clear(False)
+    TSP.SetRoundPos(TSP_First)
+    do
+        i = i + 1
+        if i > 5 then exit sub
+        tw_series.Grid.Cells(i, 1) = TSP.GetRound(TSP_team_a_name)
+        tw_series.Grid.Cells(i, 2) = TSP.GetRound(TSP_score_a) & ":" & TSP.GetRound(TSP_score_b)
+        tw_series.Grid.Cells(i, 3) = TSP.GetRound(TSP_team_b_name)
+        won_a = TSP_get_info_from_db("TABLES", "WON", "TEAM_ID", TSP.GetRound(TSP_team_a_id))
+        won_b = TSP_get_info_from_db("TABLES", "WON", "TEAM_ID", TSP.GetRound(TSP_team_b_id))
+        tw_series.Grid.Cells(i, 4) = won_a & ":" & won_b
+    loop while TSP.SetRoundPos(TSP_Next)
+end sub
+
+sub tw_series_bt_clearClick (Sender)
+   if msgbox("Sicher?!", vbYesNo) = vbYes then tw_series.grid.Clear(False)
+end sub
+
+sub tw_series_bt_showClick (Sender)
+    dim i, k : k = 0
+    dim Data : Set Data = CreateObject("Scripting.Dictionary")
+    for i = 1 to tw_series.Grid.RowCount - 1
+        if Trim(tw_series.Grid.Cells(i, 1)) <> "" then
+            k = k + 1
+            Data.Item("NAME_A" & k) = tw_series.Grid.Cells(i, 1)
+            Data.Item("LOGO_A" & k) = TSP_get_info_from_db("TEAMS", "LOGO", "LONG_NAME", Data.Item("NAME_A" & k))
+            Data.Item("RESULT" & k) = tw_series.Grid.Cells(i, 2)
+            Data.Item("NAME_B" & k) = tw_series.Grid.Cells(i, 3)
+            Data.Item("LOGO_B" & k) = TSP_get_info_from_db("TEAMS", "LOGO", "LONG_NAME", Data.Item("NAME_B" & k))
+            Data.Item("SERIE"  & k) = tw_series.Grid.Cells(i, 4)
+            Data.Item("EHL"    & k) =(tw_series.Grid.Cells(i, 5) = "X")
+        end if
+    next
+
+    Data.Item("ITEMCOUNT")  = k
+    Data.Item("TITLE")      = tw_series.ed_title.Text
+    Data.Item("SUBTITLE")   = tw_series.ed_round.Text
+
+    Hide_DSS
+    AllTV.TV__VB_PlayoffSeries Data
+    Set Data = Nothing
+end sub
+
+</script_body>
+</script>

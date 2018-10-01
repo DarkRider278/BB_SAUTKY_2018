@@ -1,0 +1,93 @@
+<script>
+<script_header>
+</script_header>
+<script_body>
+
+sub System_ApplicationEventsRunMode (Sender)
+    tw_PlayerBB.Visible = true
+    tw_PlayerBB.BringToFront
+    Set AllTV = New cls_Grafikaufrufe
+    TSP_MATCH_CHANGE
+end sub
+
+sub System_hot_DSSExecute (Sender)
+    pgMain.bt_clock.Down = not pgMain.bt_clock.Down
+    pgMain_bt_clockClick pgMain.bt_clock
+end sub
+
+sub System_ApplicationEventsTVConnectionChange (Sender, ConnID)
+    pgMain.Btn_PreLoad_VizScenes.Color          = clGreen
+    pgMain.Btn_PreLoad_VizScenes.ColorFocused   = clGreen
+    pgMain.Btn_PreLoad_VizScenes.ColorMouseOver = clGreen
+    
+    CC.SF.DebugText "VIZ VERBINDUNG WURDE GEÄNDERT!!", clRed
+    if AllTV.TV_InitConnections() then
+        pg_table.img_warnung.Visible = False
+    else
+        pg_table.img_warnung.Visible = True
+    end if
+end sub
+
+sub ParseMICProt (data, remote)
+  '  cc.sf.debugtext data
+    Dim items(5), sTime, TimeInSec
+    select case Left(data, 3)
+        case "TMT", "TMS"   ' Time-Protokoll
+            'items(1)  =  Mid(data, 3, 1)                            ' Stop or play
+            items(2)  =  Trim(Mid(data, 4, 2))                      ' Runde
+            items(3)  =  Mid(data,  7, 2)                           ' Minute
+            items(4)  =  Trim(Mid(data, 10, 4))                     ' Sekunde
+
+            If Items(3) = "00" Then
+                sTime  = Items(4)
+                TimeInSec = sTime
+            Else
+                sTime = CInt(Items(3)) & ":" & Items(4)
+                TimeInSec = (CInt(Items(3)) * 60) + Items(4)
+            End If
+
+            TSP.SetHalfTime Items(2)
+            TSP.SetMainTime 0, Items(3), CInt(Items(4)), 0
+
+        case "T1S", "T1T"    ' SHOT Clock
+            If Len(data) < 11 then
+                pgMain.bt_shotclock.Down = false
+                AllTV.TV__Hide_Shotclock
+                exit sub
+            else
+                'items(1)  =  Mid(data, 3, 1)                           ' Stop or play
+    '            items(2)  =  Trim(Mid(data, 4, 2))                     ' Runde
+                items(3)  =  Mid(data,  7, 2)                           ' Minute
+                items(4)  =  Cint(Trim(Mid(data, 10, 4))) * 1000        ' Sekunde  Change to MiliSeconds
+
+                pgMain.ShotClock.Seconds = Items(4) / 1000
+                if pg_table.cb_shotclock.Checked then
+                    if pgMain.ShotClock.Seconds <= 10 then
+                        pgMain.bt_shotclock.Down = true
+                        AllTV.TV__Show_Shotclock pgmain.ShotClock.Seconds
+                    else
+                        pgMain.bt_shotclock.Down = false
+                        AllTV.TV__Hide_Shotclock
+                    end if
+                end if
+                AllTV.TV__ShotclockChange pgMain.ShotClock.Seconds
+            end if
+        case "TCS"          ' Score-Protokoll
+'            tsp.SetScore TSP.GetTime(TSP_HalfTime), TSP_A, Mid(data, 4, 3)
+ '           tsp.SetScore TSP.GetTime(TSP_HalfTime), TSP_B, Mid(data, 7, 3)
+            tsp.SetScore -1, TSP_A, Mid(data, 4, 3)
+            tsp.SetScore -1, TSP_B, Mid(data, 7, 3)
+    end select
+end sub
+
+sub System_UDP_CLOCKSocketClosed (remote, error, message)
+    pg_table.img_connected.Visible    = System.UDP_CLOCK.Active
+    pg_table.img_disconnected.Visible = not pg_table.img_connected.Visible
+end sub
+
+sub System_hot_clearExecute (Sender)
+    pgMain_Btn_ClearAllClick Sender
+end sub
+
+</script_body>
+</script>

@@ -1,0 +1,156 @@
+object tw_moderator: TccToolWindow
+  Tag = 5
+  FloatingBorderStyle = bsNone
+  Caption = 'Moderator'
+  Color = 3289650
+  ClientAreaHeight = 102
+  ClientAreaWidth = 285
+  DockableTo = []
+  LastDock = frmMain.dckLeft
+  Resizable = False
+  TabOrder = 0
+  Visible = False
+  Floating = True
+  ParentColor = False
+  Float = True
+  SavedAtRunTime = True
+  object cb_Moderator: TptComboBox
+    Left = 10
+    Top = 20
+    Width = 271
+    Height = 21
+    TabOrder = 0
+    Text = 'Gerfried Pröll'
+    Items.WideStrings = (
+      'Thomas Trukesitz'
+      'Martin Konrad'
+      'Jörg Künne'
+      'Gerfried Pröll'
+      'Johannes Brandl'
+      'Stefan Kitzmüller'
+      'Andreas Trippolt'
+      'Roland Streinz'
+      'Constanze Weiss')
+    Items.WideStrings_UTF7 = (
+      'Thomas Trukesitz'
+      'Martin Konrad'
+      'J+APY-rg K+APw-nne'
+      'Gerfried Pr+APY-ll'
+      'Johannes Brandl'
+      'Stefan Kitzm+APw-ller'
+      'Andreas Trippolt'
+      'Roland Streinz'
+      'Constanze Weiss')
+    ItemIndex = 3
+    DroppedWidth = 271
+    DropDownAutoSize = False
+    FixedStyle = False
+    SaveStyle = cbssStandard
+    Locked = False
+    Text_UTF7 = 'Gerfried Pr+APY-ll'
+    EventDataNames = 'OnChange=tw_moderator_cb_ModeratorChange'
+  end
+  object cb_Moderator1: TptComboBox
+    Left = 9
+    Top = 55
+    Width = 271
+    Height = 21
+    TabOrder = 1
+    Text = 'Markus Pinezich#Assistant Coach;swans'
+    Items.WideStrings = (
+      'Bernd Volcic#Sky-Experte;'
+      'Lucas Hajda#Sky-Experte;'
+      'Markus Pargfrieder#Sky-Experte;'
+      'Matthias Zollner#Sky-Experte;'
+      'Stefan Weissenböck#Sky-Experte;'
+      ''
+      '----------BCVIENNA-----------------'
+      'Petar Stazic-Strbac#General Manager;bc'
+      'Ersin Sandak#Assistant Coach;bc'
+      'Tomislav Vidovic#Assistant Coach;bc'
+      '----------FÜRSTENFELD----------'
+      'Karl Sommer#Präsident;panthers'
+      'Adnan Hajda#Assistant Coach;panthers'
+      '----------GMUNDEN---------------------------'
+      'Rudolf Steiner#Obmann;swans'
+      'Harald Stelzer#Sportlicher Leiter;swans'
+      'Richard Poiger#Geschäftsführer;swans'
+      'Markus Pinezich#Assistant Coach;swans'
+      '----------GRAZ---------------------------'
+      'Bernd Kubin#Obmann;ubsc'
+      'Michael Fuchs#General Manager;ubsc'
+      'Benjamin Pesendorfer#Assistant Coach;ubsc'
+      '----------KAPFENBERG-------------'
+      'Heribert Krammer#Präsident;bulls'
+      'Oliver Freund#Geschäftsführer;bulls'
+      'Tatiana Gallova#Assistant Coach;bulls'
+      '----------KLOSTERNEUBURG-------'
+      'Werner Sallomon#Obmann;dukes'
+      'Roman Leydolf#General Manager;dukes'
+      'Matthias Hager#Manager;dukes'
+      'Damir Zeleznik#Assistant Coach;dukes'
+      '----------OBERWART----------------'
+      'Thomas Linzer#Präsident;gunners'
+      'Andreas Leitner#Manager;gunners'
+      'Goran Patekar#Assistant Coach;gunners'
+      '----------TRAISKIRCHEN------------'
+      'Ernst Nemeth#Obmann;lions'
+      'Helmut Niederhofer#Sportlicher Leiter;lions'
+      'Stefan Grassegger#Assistant Coach;lions'
+      '----------WELS-------------------------'
+      'Bernhard Ploier#Präsident;wbc'
+      'HeinzPeter Fiszter#Geschäftsführer;wbc'
+      'Dana Beszczynski#Assistant Coach;wbc ')
+    Items.WideStrings_UTF7 = (
+      'Bernd Volcic#Sky-Experte;'
+      'Lucas Hajda#Sky-Experte;'
+      'Markus Pargfrieder#Sky-Experte;'
+      'Matthias Zollner#Sky-Experte;'
+      'Stefan Weissenb+APY-ck#Sky-Experte;'
+      ''
+      '----------BCVIENNA-----------------'
+      'Petar Stazic-Strbac#General Manager;bc'
+      'Ersin Sandak#Assistant Coach;bc'
+      'Tomislav Vidovic#Assistant Coach;bc'
+      '----------F+ANw-RSTENFELD----------'
+      'Karl Sommer#Pr+AOQ-sident;panthers'
+      'Adnan Hajda#Assistant Coach;panthers'
+      '----------GMUNDEN---------------------------'
+      'Rudolf Steiner#Obmann;swans'
+      'Harald Stelzer#Sportlicher Leiter;swans'
+      'Richard Poiger#Gesch+AOQ-ftsf+APw-hrer;swans'
+      'Markus Pinezich#Assistant Coach;swans'
+      '----------GRAZ---------------------------'
+      'Bernd Kubin#Obmann;ubsc'
+      'Michael Fuchs#General Manager;ubsc'
+      'Benjamin Pesendorfer#Assistant Coach;ubsc'
+      '----------KAPFENBERG-------------'
+      'Heribert Krammer#Pr+AOQ-sident;bulls'
+      'Oliver Freund#Gesch+AOQ-ftsf+APw-hrer;bulls'
+      'Tatiana Gallova#Assistant Coach;bulls'
+      '----------KLOSTERNEUBURG-------'
+      'Werner Sallomon#Obmann;dukes'
+      'Roman Leydolf#General Manager;dukes'
+      'Matthias Hager#Manager;dukes'
+      'Damir Zeleznik#Assistant Coach;dukes'
+      '----------OBERWART----------------'
+      'Thomas Linzer#Pr+AOQ-sident;gunners'
+      'Andreas Leitner#Manager;gunners'
+      'Goran Patekar#Assistant Coach;gunners'
+      '----------TRAISKIRCHEN------------'
+      'Ernst Nemeth#Obmann;lions'
+      'Helmut Niederhofer#Sportlicher Leiter;lions'
+      'Stefan Grassegger#Assistant Coach;lions'
+      '----------WELS-------------------------'
+      'Bernhard Ploier#Pr+AOQ-sident;wbc'
+      'HeinzPeter Fiszter#Gesch+AOQ-ftsf+APw-hrer;wbc'
+      'Dana Beszczynski#Assistant Coach;wbc ')
+    ItemIndex = 17
+    DroppedWidth = 271
+    DropDownAutoSize = False
+    FixedStyle = False
+    SaveStyle = cbssStandard
+    Locked = False
+    EventDataNames = 'OnChange=tw_moderator_cb_Moderator1Change'
+  end
+end

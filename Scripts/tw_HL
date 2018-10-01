@@ -1,0 +1,11 @@
+<script>
+<script_header>
+</script_header>
+<script_body>
+
+sub tw_highlight_bt_HL_1Click (Sender)
+    AllTV.TV__HL Right(Sender.Name, 1), Sender.down
+end sub
+
+</script_body>
+</script>

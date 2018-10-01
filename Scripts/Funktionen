@@ -1,0 +1,267 @@
+<script>
+<script_header>
+</script_header>
+<script_body>
+public sub TSP_MATCH_CHANGE
+    on error resume next        ' In dieser Funktion gibt es immer einen Fehler wenn der Benutzer im TSP die Datenbank öffnet aber noch kein SPiel ausgewählt hat
+    dim count : count = -1
+    ERASE PLAYER_NAMES_A
+    ERASE PLAYER_NAMES_B
+    ERASE LASTNAMES_A
+    ERASE LASTNAMES_B
+
+    if tsp.GetSTeam("long_name") = "" then exit sub ' Kein Spiel offen im Moment
+    TSP.SaveSelection
+    TSP.SetTeamPos TSP_A
+    
+    LOGO_A      = TSP.GetSTeam(TSP_LOGO)
+    NAME_A      = TSP.GetSTeam(TSP_LONG_NAME)
+    SHORTNAME_A = TSP.GetSTeam(TSP_TV_NAME)
+    if pgMain.cb_old_dss.Checked then
+    pgMain.ed_shortname_a.Text = TSP.GetSTeam(TSP_SHORT_NAME)
+    else
+    pgMain.ed_shortname_a.Text = TSP.GetSTeam(TSP_TV_NAME)
+    end if
+    if TSP.SetPlayerPos(TSP_First, TSP_ALL, TSP_Actual) then
+        do
+            count = count + 1
+            redim preserve PLAYER_NAMES_A(count)
+            redim preserve LASTNAMES_A(count)
+            PLAYER_NAMES_A(count) = TSP.GetHPlayer(TSP_SECOND_NAME) & ", " & TSP.GetHPlayer(TSP_FIRST_NAME) 'TSP.GetTPlayer(TSP_PLAYER_NAME)
+            LASTNAMES_A(count)    = TSP.GetHPlayer(TSP_SECOND_NAME)
+        Loop While TSP.SetPlayerPos(TSP_Next, TSP_ALL, TSP_Actual)
+    end if
+    
+    
+
+    
+    count = -1
+    TSP.SetTeamPos TSP_B
+    LOGO_B      = TSP.GetSTeam(TSP_LOGO)
+    NAME_B      = TSP.GetSTeam(TSP_LONG_NAME)
+    SHORTNAME_B = TSP.GetSTeam(TSP_TV_NAME)
+    if pgMain.cb_old_dss.Checked then
+    pgMain.ed_shortname_b.Text = TSP.GetSTeam(TSP_SHORT_NAME)
+    else
+    pgMain.ed_shortname_b.Text = TSP.GetSTeam(TSP_TV_NAME)
+    end if
+    if TSP.SetPlayerPos(TSP_First, TSP_ALL, TSP_Actual) then
+        do
+            count = count + 1
+            redim preserve PLAYER_NAMES_B(count)
+            redim preserve LASTNAMES_B(count)
+            PLAYER_NAMES_B(count) = TSP.GetHPlayer(TSP_SECOND_NAME) & ", " & TSP.GetHPlayer(TSP_FIRST_NAME) 'TSP.GetTPlayer(TSP_PLAYER_NAME)
+            LASTNAMES_B(count)    = TSP.GetHPlayer(TSP_SECOND_NAME)
+        Loop While TSP.SetPlayerPos(TSP_Next, TSP_ALL, TSP_Actual)
+    end if
+    TSP.RestoreSelection
+    
+    tw_highlights.cb_player.Items.Clear
+    dim name
+    for each name in LASTNAMES_A
+        if tw_highlights.cb_player.Items.IndexOf(name) = -1 then tw_highlights.cb_player.Items.add name
+    next
+    for each name in LASTNAMES_B
+        if tw_highlights.cb_player.Items.IndexOf(name) = -1 then tw_highlights.cb_player.Items.add name
+    next
+end sub
+
+'*******************************************************************************
+Function EmptyToZero(ByVal Value)
+    if Value = "-1" then Value = 0    ' Raus damit!!!!!  --> SIEMIC: Jetzt versteh ich den Sinn. GetDPlayer gibt leider "-1" zurück wenn kein Wert vorhanden.. Das ist blöd
+    If Not IsNumeric(Value) Then
+        EmptyToZero = 0
+    Else
+        EmptyToZero = CLng(Value)
+    End If
+    EmptyToZero = CStr(EmptyToZero)
+End Function
+
+' Score eines Viertels ändert sich -> Aktualisiert den HauptScore
+sub Small_Score_Change
+    exit sub ' Siemic: Die operatoren möchten das nicht. Da die Punkte nur einzeln vergeben werden können, im Basketball aber gleich 3 auf einmal
+    dim sum_a, sum_b, i
+    for i = 1 to TSP.GetTime(TSP_HalfTime)
+        sum_a = sum_a + TSP.GetScore(i, TSP_A)
+        sum_b = sum_b + TSP.GetScore(i, TSP_B)
+    next
+    call TSP.SetScore(-1, TSP_A, sum_a)
+    call TSP.SetScore(-1, TSP_B, sum_b)
+end sub
+
+' Gesamt Score ändert sich -> Aktualisiert DSS und wird automatisch aufgerufen
+sub Score_Change
+    dim tmp,i
+
+    ' Small Score versuchen zu berechen --> Wieviele Punkte wurden NUR IM AKTUELLEN Viertel erreicht?
+    tmp = 0
+    for i = 1 to TSP.GetTime(TSP_HalfTime) - 1      ' = Die Differenz zu allen Punkten aus VORHERIGEN Vierteln!
+        tmp = tmp + TSP.GetScore(i, TSP_A)
+    next
+    TSP.SetScore TSP.GetTime(TSP_HalfTime), TSP_A, TSP.GetScore(0, TSP_A) - tmp
+    
+    tmp = 0
+    for i = 1 to TSP.GetTime(TSP_HalfTime) - 1      ' = Die Differenz zu allen Punkten aus VORHERIGEN Vierteln!
+        tmp = tmp + TSP.GetScore(i, TSP_B)
+    next
+    TSP.SetScore TSP.GetTime(TSP_HalfTime), TSP_B, TSP.GetScore(0, TSP_B) - tmp
+
+    AllTV.TV__ScoreChange TSP.GetScore(0, TSP_A), TSP.GetScore(0, TSP_B)
+    pgMain.lbl_score_a.Caption = TSP.GetScore(0, TSP_A)
+    pgMain.lbl_score_b.Caption = TSP.GetScore(0, TSP_B)
+end sub
+
+sub pgMain_bt_playerBBClick (Sender)
+    dim param
+    dim id : id=TSP.GetTPlayer(TSP_player_id)
+    'cc.sf.DebugText id
+    dim pName : pName = TSP.GetTPlayer(TSP_PLAYER_NAME)
+    dim fname
+
+    tw_PlayerBB.ed_Name.Text = TSP_get_info_from_db("PLAYERS_1","second_name","db_id",id)                          ' Wenn mal kein Name im Dialog Fenster erscheint, dann wurde der Spieler anscheinend ohne Namen in der Databar abgespeichert.
+    tw_PlayerBB.ed_FName.Text = TSP_get_info_from_db("PLAYERS_1","first_name","db_id",id)
+    tw_PlayerBB.ed_nr.Text   = TSP.GetTPlayer(TSP_DRESS_NR)
+    tw_PlayerBB.cb_logo.Text = TSP.GetSTeam(TSP_logo)         ' GGF einfach den Spieler aus dem DataBar löschen und nochmal versuchen!
+    tw_PlayerBB.Memo1.Lines.Clear
+    tw_PlayerBB.DataBar1.LoadData UCase(pName)    ' Schau mal obs vllt schon Daten gibt
+    tw_PlayerBB.cb_bb_typ.ItemIndex=0
+    tw_BBStats.ed_Name.Text = TSP_get_info_from_db("PLAYERS_1","second_name","db_id",id)                          ' Wenn mal kein Name im Dialog Fenster erscheint, dann wurde der Spieler anscheinend ohne Namen in der Databar abgespeichert.
+    tw_BBStats.ed_FName.Text = TSP_get_info_from_db("PLAYERS_1","first_name","db_id",id)                         ' Wenn mal kein Name im Dialog Fenster erscheint, dann wurde der Spieler anscheinend ohne Namen in der Databar abgespeichert.
+    tw_BBStats.ed_nr.Text   = TSP.GetTPlayer(TSP_DRESS_NR)
+    tw_BBStats.cb_logo.Text = TSP.GetSTeam(TSP_logo)         ' GGF einfach den Spieler aus dem DataBar löschen und nochmal versuchen!
+    tw_BBStats.Memo1.Lines.Clear
+    fname= trim(TSP_get_info_from_db("PLAYERS_1","first_name","db_id",id))
+    if fname <> "" then
+        fname=left(fname,1)& ". "
+    end if
+    tw_dss_info.ed_Name.Text = fname&TSP_get_info_from_db("PLAYERS_1","second_name","db_id",id)                          ' Wenn mal kein Name im Dialog Fenster erscheint, dann wurde der Spieler anscheinend ohne Namen in der Databar abgespeichert.
+    'tw_dss_info.ed_nr.Text   = TSP.GetTPlayer(TSP_DRESS_NR)
+    tw_dss_info.ed_team_long.text =tsp.GetSTeam(TSP_SHORT_NAME)
+    tw_dss_info.ed_team_short.text =tsp.GetSTeam(TSP_NICK_NAME)
+    'tw_dss_info.cb_logo.Text = TSP.GetSTeam(TSP_logo)
+    tw_dss_info_rg_statClick (Sender)
+
+    ''''' FOUL FENSTER '''''
+    tw_foul.ed_Name.Text = TSP.GetTPlayer(TSP_PLAYER_NAME)
+    tw_foul.ed_Name.Text = TSP_get_info_from_db("PLAYERS_1","second_name","db_id",id)                          ' Wenn mal kein Name im Dialog Fenster erscheint, dann wurde der Spieler anscheinend ohne Namen in der Databar abgespeichert.
+    tw_foul.ed_FName.Text = TSP_get_info_from_db("PLAYERS_1","first_name","db_id",id)
+    tw_foul.ed_nr.Text   = TSP.GetTPlayer(TSP_DRESS_NR)
+    tw_foul.cb_logo.Text = TSP.GetSTeam(TSP_logo)
+    tw_foul.rb_nametyp.ItemIndex=0
+    dim fouls : fouls = EmptyToZero(TSP.GetDPlayer(21))
+    if cInt(fouls) = 0 then fouls = 1                    ' Wird schon einen Grund geben warum der OP den Foul Button drückt
+    if fouls >= 5 then
+        tw_foul.rg_foul.ItemIndex = 4
+    else
+        tw_foul.rg_foul.ItemIndex = fouls - 1
+    end if
+    
+
+'    cc.sf.debugtext "TODO: IMPLEMENT PLAYER STATS" , clRed
+'    get_player_stats
+end sub
+
+
+  ' ***********************************************************************************************************
+' Speichert eine Option im Projektdatenfile
+' ***********************************************************************************************************
+SUB SetIniOption(ByVal Item, ByVal NewVal)
+    ' Strings-Objekt leeren
+    CC.Strings.StringsObj.Clear
+
+    ' Gesamtdaten des Projektdatenfiles laden
+    CC.Strings.StringsObj.CommaText = CC.DataFunctions.LoadProjectData("ProjectData")
+
+    ' Wert an Eintrag zuweisen, falls nicht vorhanden, wird Eintrag angelegt
+    IF NewVal = "" THEN NewVal = " " ' Leerstring wird als Option nicht gespeichert, daher Leerzeichen erzeugen
+    CC.Strings.StringsObj.Values(Item) = NewVal
+
+    ' Gesamtdaten in Projektdatenfile zurückschreiben
+    CC.DataFunctions.SaveProjectData "ProjectData", CC.Strings.StringsObj.CommaText
+END SUB
+
+
+' ***********************************************************************************************************
+' Liest eine Option aus dem Projektdatenfile
+' (falls nicht vorhanden, wird der Defaultwert zurückgegeben)
+' ***********************************************************************************************************
+FUNCTION GetIniOption (ByVal Item, ByVal Default)
+    ' Strings-Objekt leeren
+    CC.Strings.StringsObj.Clear
+
+    ' Gesamtdaten des Projektdatenfiles laden
+    CC.Strings.StringsObj.CommaText = CC.DataFunctions.LoadProjectData("ProjectData")
+
+    ' Überprüfen, ob Option schon vorhanden (IndexOfName => 0), sonst Defaultwert
+    IF CC.Strings.StringsObj.IndexOfName(Item) = -1 THEN
+        GetIniOption = Default
+    ELSE
+        GetIniOption = CC.Strings.StringsObj.Values(Item)
+        IF GetIniOption = " " THEN GetIniOption = "" ' s. Skript SetIniOption
+    END IF
+END FUNCTION
+
+'*******************************************************************************
+'Übergibt den Index einer Spalte in einem Grid in der GUI, anhand des übergebenen Spaltentitel
+Function GetColIdx(ByRef o_Tab, ByVal sCol)
+
+    GetColIdx = -1
+
+    If not isObject(o_Tab) Then Exit Function
+    If o_Tab is Nothing Then Exit Function
+
+    dim TmpIdx : TmpIdx = o_Tab.ColumnHeaders.IndexOf(sCol)
+
+    If not TmpIdx = -1 Then
+       GetColIdx = TmpIdx
+    Else
+       cc.sf.DebugText "Could't find Column '" & sCol & "' in " & o_Tab.Name, clRed
+    End If
+End Function
+
+
+' ***********************************************************************************************************
+' Entfernt eine Option aus dem Projektdatenfile und gibt (vorher) ihren Wert zurück
+' (wenn nicht vorhanden, dann Defaultwert zurückgeben)
+' ***********************************************************************************************************
+FUNCTION DeleteIniOption (ByVal Item, ByVal Default)
+    ' Strings-Objekt leeren
+    CC.Strings.StringsObj.Clear
+
+    ' Gesamtdaten des Projektdatenfiles laden
+    CC.Strings.StringsObj.CommaText = CC.DataFunctions.LoadProjectData("ProjectData")
+
+    ' Überprüfen, ob Option vorhanden (IndexOfName => 0), sonst Defaultwert
+    IF CC.Strings.StringsObj.IndexOfName(Item) = -1 THEN
+        DeleteIniOption = Default
+    ELSE
+        ' Wert der Variablen an Funktions-Rückgabe zuweisen
+        DeleteIniOption = CC.Strings.StringsObj.Values(Item)
+        IF DeleteIniOption = " " THEN DeleteIniOption = "" ' s. Skript SetIniOption
+
+        ' Eintrag löschen
+        CC.Strings.StringsObj.Delete(CC.Strings.StringsObj.IndexOfName(Item))
+        ' geänderte Daten in Projektdatenfile zurückschreiben
+        CC.DataFunctions.SaveProjectData "ProjectData", CC.Strings.StringsObj.CommaText
+    END IF
+END FUNCTION
+
+' get "what" from "db" where "where" = "Value"
+function TSP_get_info_from_db(db, what, where, value)
+    TSP_get_info_from_db = ""
+    if (trim(what) = "") or (trim(where) = "") or (trim(value) = "") then
+        exit function
+    end if
+    
+    dim sql : sql = "SELECT "& what &" FROM "& db &" WHERE " & where & "='"& value &"'"
+    if db = "PLAYERS_2" then sql = sql & " AND team_id<>'0'"
+ '   cc.sf.debugtext sql
+    TSP.LoadSQLData(sql)
+    TSP.SetSQLPos(TSP_First)
+    TSP_get_info_from_db = TSP.GetSQLData(what)
+    do
+    loop while TSP.SetSQLPos(TSP_Next)      ' Eine TSP(!) SQL Transaktion unbedingt immer bis zu Ende durchlaufen!
+end function
+
+</script_body>
+</script>

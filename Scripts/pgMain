@@ -1,0 +1,1021 @@
+<script>
+<script_header>
+</script_header>
+<script_body>
+
+sub Hide_DSS()
+    pgMain.bt_clock.Down = False
+    AllTV.TV__DSS_Hide
+end sub
+
+
+sub pgMain_Btn_ClearAllClick (Sender)
+    AllTV.TV__ClearAll
+end sub
+
+sub pgMain_Btn_PreLoad_VizScenesClick (Sender)
+    if MsgBox("SICHER?", vbYesNo) = vbYes then
+        AllTV.TV__InitLayouts
+        Sender.Color          = clBtnFace
+        Sender.ColorFocused   = clBtnFace
+        Sender.ColorMouseOver = clBtnFace
+    end if
+end sub
+
+sub pgMain_Button2Click (Sender)
+    AllTV.TV__Kill_Bill
+end sub
+
+sub pgMain_bt_crawlClick (Sender)
+    tw_crawl.Visible = true
+    tw_crawl.BringToFront
+end sub
+
+sub tw_playerBB_bt_show_crawlClick (Sender)
+    dim Data : Set Data = CreateObject("Scripting.Dictionary")
+    dim i
+    for i = 0 to tw_PlayerBB.Memo1.Lines.Count - 1
+        Data.Item("LINE" & i + 1) = tw_PlayerBB.Memo1.Lines.Strings(i)
+    next
+    Data.Item("NAME")      = tw_PlayerBB.ed_Name.Text
+    Data.Item("FNAME")      = tw_PlayerBB.ed_FName.Text
+    Data.Item("NR")        = tw_PlayerBB.ed_nr.Text
+    Data.Item("LOGO")      = tw_PlayerBB.cb_logo.Text
+    Data.Item("ITEMCOUNT") = tw_PlayerBB.Memo1.Lines.Count
+    Data.Item("SHOWHS") = tw_PlayerBB.cb_showHS.Checked
+    Data.item("BBTYP")=tw_PlayerBB.cb_bb_typ.ItemIndex
+    AllTV.TV__BB_Player Data, tw_PlayerBB.cb_two_lines.Checked
+    set Data = Nothing
+end sub
+
+sub tw_playerBB_listClick (Sender)
+    if Sender.ItemIndex <> -1 then
+        tw_PlayerBB.DataBar1.LoadData tw_PlayerBB.list.Items.Strings(Sender.itemindex)
+    end if
+end sub
+
+sub tw_player_BB_list_refresh()
+    dim i
+    tw_PlayerBB.list.Items.Clear
+    for i = 0 to tw_PlayerBB.DataBar1.DataItemCount
+        tw_PlayerBB.list.Items.Add tw_PlayerBB.DataBar1.DataItems(i)
+    next
+end sub
+
+sub tw_playerBB_bt_saveClick (Sender)
+    tw_PlayerBB.DataBar1.SaveData tw_PlayerBB.ed_Name.Text
+    tw_player_BB_list_refresh
+end sub
+
+sub tw_playerBB_listDblClick (Sender)
+     call tw_playerBB_listClick (Sender)
+     call tw_playerBB_bt_show_crawlClick (Sender)
+end sub
+
+
+
+sub tw_playerBB_DataBar1BeforeDataSave (Sender, ComboText)
+    if tw_PlayerBB.list.Items.IndexOf(ComboText) = -1 then
+        tw_PlayerBB.list.Items.add ComboText
+    end if
+end sub
+
+sub tw_playerBB_DataBar1BeforeDataDelete (Sender, ComboText)
+    if tw_PlayerBB.list.Items.IndexOf(ComboText) <> -1 then
+        tw_PlayerBB.list.Items.Delete(tw_PlayerBB.list.Items.IndexOf(ComboText))
+    end if
+end sub
+
+sub pgMain_bt_megafactsClick (Sender)
+    If TSP.LoadSQLData("SELECT * FROM TEAMS WHERE league_id='" & TSP.GetRound(TSP_LEAGUE_ID) & "'") Then
+            If TSP.SetSQLPos("First") Then
+                tw_megafacts.cb_name1.UserData = tw_megafacts.cb_name1.Text
+                tw_megafacts.cb_name2.UserData = tw_megafacts.cb_name2.Text
+                tw_megafacts.cb_name1.Items.Clear
+                tw_megafacts.cb_name2.Items.Clear
+
+                Do
+                    if tw_megafacts.cb_name1.Items.IndexOf(TSP.GetSQLData("long_name")) = -1 then  tw_megafacts.cb_name1.Items.Add TSP.GetSQLData("long_name")
+                    if tw_megafacts.cb_name2.Items.IndexOf(TSP.GetSQLData("long_name")) = -1 then  tw_megafacts.cb_name2.Items.Add TSP.GetSQLData("long_name")
+                Loop While TSP.SetSQLPos("Next")
+                tw_megafacts.cb_name1.ItemIndex = tw_megafacts.cb_name1.Items.IndexOf(tw_megafacts.cb_name1.UserData)
+                tw_megafacts.cb_name2.ItemIndex = tw_megafacts.cb_name2.Items.IndexOf(tw_megafacts.cb_name2.UserData)
+            end if
+        end if
+        AllTV.get_player_photosMF
+    ' tw_megafacts.ed_score.Text =TSP.GetScore(0, TSP_A) + TSP.GetScore(1,TSP_A) & ":" & TSP.GetScore(0, TSP_B) + TSP.GetScore(1,TSP_B)
+    tw_megafacts.Visible = true
+    tw_megafacts.BringToFront
+end sub
+
+sub pgMain_bt_tv_programmClick (Sender)
+    dim k,i, tmp_obj
+    for i = 0 to tw_TV_Programm.ComponentCount - 1
+        set tmp_obj = tw_TV_Programm.Components(i)
+        if tmp_obj.ComponentType = "TptComboBox" then
+            tmp_obj.UserData = tmp_obj.Text
+            tmp_obj.items.clear        ' Ich glaub ich will die nicht löschen
+        end if
+    next
+    
+    TSP.LoadSQLData("SELECT * FROM TEAMS")
+    TSP.SetSQLPos(TSP_First)
+    Do
+        for i = 1 to tw_TV_Programm.ComponentCount - 1
+            set tmp_obj = tw_TV_Programm.Components(i)
+                if tmp_obj.ComponentType = "TptComboBox" then
+                    if tmp_obj.Items.IndexOf(TSP.GetSQLData("short_name")) = -1 then  tmp_obj.Items.Add TSP.GetSQLData("short_name")   ' Hinzufügen wenn nicht schon da
+                end if
+        next
+    Loop While TSP.SetSQLPos(TSP_Next)
+
+    for i = 0 to tw_TV_Programm.ComponentCount - 1    ' Alte Auswahl wiederherstellen
+        set tmp_obj = tw_TV_Programm.Components(i)
+        if tmp_obj.ComponentType = "TptComboBox" then
+            if tmp_obj.Items.IndexOf(" ") = -1 then  tmp_obj.Items.Add " " ' Hinzufügen wenn nicht schon da
+            tmp_obj.ItemIndex = tmp_obj.Items.IndexOf(tmp_obj.UserData)
+        end if
+    next
+
+
+    dim today : today = now()
+    dim round : round = cint(EmptyToZero(tsp.GetRound(TSP_ROUND)))
+    dim match_date
+    dim match_date_string
+    ' Daten aus TSP SpielDB lesen
+    ' Alle Spiele wo das aktuelle team beteiligt ist und später als das aktuelle statt finden
+    tsp.LoadSQLData("SELECT * FROM ROUNDS_LIST") ' WHERE round>='"&tsp.GetRound(TSP_ROUND)&"' ORDER BY DB_ID ASC")
+    tsp.SetSQLPos(TSP_First)
+    i = 0
+    if false then
+    Do
+        if cint(EmptyToZero(TSP.GetSQLData("round"))) >= round then
+            i = i + 1
+            if i <= 12 then ' Mehr kann ich nicht darstellen
+                tw_TV_Programm.ComponentByName("cb_name" & i).text    = tsp.GetTeamByID(TSP_STeam, tsp.GetSQLData("team_a_id"), TSP_NICK_NAME)
+                tw_TV_Programm.ComponentByName("cb_name" & 12+i).text = tsp.GetTeamByID(TSP_STeam, tsp.GetSQLData("team_b_id"), TSP_NICK_NAME)
+'                tw_TV_Programm.ComponentByName("cb_name" & i).text    = tw_TV_Programm.cb_name1.Items.IndexOf(tsp.GetSQLData("team_a_name"))
+ '               tw_TV_Programm.ComponentByName("cb_name" & 12+i).ItemIndex = tw_TV_Programm.cb_name1.Items.IndexOf(tsp.GetSQLData("team_b_name"))
+                 match_date_string =tsp.GetSQLData("match_date")
+                 if match_date_string <> "" then
+                 cc.SF.DebugText    match_date_string
+                    match_date = cdate(match_date_string)        ' Wenn das SPiel heute stattfindet, nur die Uhrzeit anzeigen
+
+                    if (day(now) = day(match_date)) and (month(now) = month(match_date)) then
+                        tw_TV_Programm.ComponentByName("ed_Zeit" & i).Text = split(tsp.GetSQLData("match_date"), " ")(1)
+                    else
+                        tw_TV_Programm.ComponentByName("ed_Zeit" & i).Text = tsp.GetSQLData("match_date")
+                    end if
+                else
+                   tw_TV_Programm.ComponentByName("ed_Zeit" & i).Text=""
+                end if
+            end if
+        end if
+    Loop While TSP.SetSQLPos(TSP_Next)
+    end if
+'    for i = i + 1 to 12
+'        tw_TV_Programm.ComponentByName("ed_Zeit" & i).Text = ""
+'    next
+
+    tw_TV_Programm.Visible = True
+    tw_TV_Programm.BringToFront
+end sub
+
+sub pgMain_bt_tv_aufstellung_crawlMouseUp (Sender, Button, Shift, X, Y)
+    dim Data : Set Data = CreateObject("Scripting.Dictionary")
+    dim i : i = 0
+    dim k : k = 0
+    TSP.SaveSelection
+    TSP.SetPlayerPos TSP_First, TSP_I, TSP_Actual
+    Do
+        i = TSP.GetTPlayer(TSP_dummy_2)
+        k = k + 1
+        Data.Item("BIB"  & i) = TSP.GetTPlayer(TSP_dress_nr)
+        Data.Item("NAME" & i) = left(TSP.GetHPlayer(TSP_FIRST_NAME), 1) & ". " & TSP.GetHPlayer(TSP_SECOND_NAME)
+        select case UCase(left(TSP.GetTPlayer(TSP_pos_in_game),1))
+            case "G"    Data.Item("TEXT" & i) = "GUARD"
+            case "F"    Data.Item("TEXT" & i) = "FORWARD"
+            case "C"    Data.Item("TEXT" & i) = "CENTER"
+            case else   Data.Item("TEXT" & i) = TSP.GetTPlayer(TSP_pos_in_game)
+        end Select
+    Loop While TSP.SetPlayerPos(TSP_Next, TSP_I, TSP_Actual)
+
+    TSP.RestoreSelection
+    Data.Item("LOGO")      = TSP.GetSTeam(TSP_LOGO)
+    Data.Item("NAME")      = TSP.GetSTeam(TSP_TV_NAME)
+    Data.Item("TRAINER")   = tsp.GetOfficialById(TSP.GetSTeam(TSP_coach_1_id),TSP_first_name) & " " & tsp.GetOfficialById(TSP.GetSTeam(TSP_coach_1_id), TSP_last_name)
+    Data.Item("ITEMCOUNT") = i
+    
+    if k = 0 then exit sub
+    if k <> 5 then msgbox "Keine 5 Spieler nominiert?!"
+
+    if Sender is pgMain.bt_tv_aufstellung_box then
+        Data.Item("AS_INFOBOX") = true
+        for i = 1 to 5
+            tw_HL.ComponentByName("bt_HL_" & i).down = false
+        next
+        tw_HL.Visible = True
+        tw_HL.BringToFront
+    else
+        if Button = 1 then Data.Item("REPEAT") = true
+    end if
+    
+    AllTV.TV__BB_Starting_Five Data
+    set Data = Nothing
+end sub
+
+sub pgMain_bt_highlightClick (Sender)
+
+    tw_highlights.Visible = True
+    tw_highlights.BringToFront
+end sub
+
+sub pgMain_bt_KommentatorClick (Sender)
+    tw_commentBB.Visible =  True
+    tw_commentBB.BringToFront
+end sub
+
+sub pgMain_bt_OpeningClick (Sender)
+    if Sender is pgMain.bt_Opening then
+        AllTV.TV__BB_Match SHORTNAME_A, SHORTNAME_B, LOGO_A, LOGO_B, TSP.GetTime(TSP_HalfTimeCaption, TSP.GetTime(TSP_HalfTime))
+    else
+        AllTV.TV__BB_Match SHORTNAME_A, SHORTNAME_B, LOGO_A, LOGO_B, TSP.GetScore(0, TSP_A) & ":" & TSP.GetScore(0, TSP_B)
+    end if
+end sub
+
+sub tw_playerBB_bt_show_statsClick (Sender)
+    dim Data : Set Data = CreateObject("Scripting.Dictionary")
+    Data.Item("TEXT1")  = tw_PlayerBB.stats.Cells(0,0)
+    Data.Item("TEXT2")  = tw_PlayerBB.stats.Cells(1,0)
+    Data.Item("TEXT3")  = tw_PlayerBB.stats.Cells(2,0)
+    if Sender is tw_PlayerBB.bt_show_match_stats then
+        Data.Item("VALUE1") = tw_PlayerBB.stats.Cells(0,1)
+        Data.Item("VALUE2") = tw_PlayerBB.stats.Cells(1,1)
+        Data.Item("VALUE3") = tw_PlayerBB.stats.Cells(2,1)
+    else
+        Data.Item("VALUE1") = tw_PlayerBB.stats.Cells(0,2)
+        Data.Item("VALUE2") = tw_PlayerBB.stats.Cells(1,2)
+        Data.Item("VALUE3") = tw_PlayerBB.stats.Cells(2,2)
+    end if
+    Data.Item("NAME")   = tw_PlayerBB.ed_Name.Text
+    Data.Item("LOGO")   = tw_PlayerBB.cb_logo.text
+    Data.Item("SHOWHS") = pgMain.cb_showHS.Checked
+    Data.Item("ITEMCOUNT") = 3
+    AllTV.TV__PlayerStats Data
+    set Data = Nothing
+end sub
+
+sub pgMain_bt_quizClick (Sender)
+    tw_quiz.Visible = True
+    tw_quiz.BringToFront
+end sub
+
+sub pgMain_bt_teamStatsClick (Sender)
+    tw_team_stats.cb_name1.UserData = tw_team_stats.cb_name1.Text
+    tw_team_stats.cb_name2.UserData = tw_team_stats.cb_name2.Text
+    tw_team_stats.cb_name1.Items.Clear
+    tw_team_stats.cb_name2.Items.Clear
+    tsp.LoadSQLData("SELECT * FROM TEAMS WHERE league_id='" & TSP.GetRound(TSP_LEAGUE_ID) & "'")
+    tsp.SetSQLPos(TSP_First)
+    do
+        if tw_team_stats.cb_name1.Items.IndexOf(tsp.GetSQLData("tv_name")) = -1 then  tw_team_stats.cb_name1.Items.Add tsp.GetSQLData("tv_name")
+        if tw_team_stats.cb_name2.Items.IndexOf(tsp.GetSQLData("tv_name")) = -1 then  tw_team_stats.cb_name2.Items.Add tsp.GetSQLData("tv_name")
+    Loop While tsp.SetSQLPos(TSP_Next)
+
+    tw_team_stats.cb_name1.ItemIndex = tw_team_stats.cb_name1.Items.IndexOf(SHORTNAME_A)
+    tw_team_stats.cb_name2.ItemIndex = tw_team_stats.cb_name2.Items.IndexOf(SHORTNAME_B)
+    
+    tw_team_stats.cb_logo1.ItemIndex = tw_team_stats.cb_logo1.Items.IndexOf(LOGO_A)
+    tw_team_stats.cb_logo2.ItemIndex = tw_team_stats.cb_logo2.Items.IndexOf(LOGO_B)
+'    tw_team_stats2_rg_statsTypeClick Nothing  ' Lädt Werte in die Comboboxen
+    tw_team_stats.Visible = True
+    tw_team_stats.BringToFront
+end sub
+
+sub pgMain_bt_zwischenstandClick (Sender)
+
+end sub
+
+sub pgMain_bt_vbOpeningMouseUp (Sender, Button, Shift, X, Y)
+    dim Data : Set Data = CreateObject("Scripting.Dictionary")
+    Data.Item("BACKGROUND") = pg_table.cb_background.Checked
+    Data.Item("WITH_NAMES") = pg_table.cb_with_names.checked
+    Data.Item("LOGO1") = LOGO_A
+    Data.Item("LOGO2") = LOGO_B
+    Data.Item("NAME1") = SHORTNAME_A
+    Data.Item("NAME2") = SHORTNAME_B
+    if Button = 0 then
+        Data.Item("RESULT") = TSP.GetScore(0, TSP_A) & ":" & TSP.GetScore(0, TSP_B)
+    end if
+    if pg_table.cb_background.Checked then Hide_DSS
+    AllTV.TV__VB_Opening Data
+    set Data = Nothing
+end sub
+
+sub show_official (Sender)
+    tw_PlayerBB.ed_Name.Text = tsp.GetOfficialById(TSP.GetSTeam(TSP_coach_1_id), TSP_last_name)
+    tw_PlayerBB.ed_FName.Text = tsp.GetOfficialById(TSP.GetSTeam(TSP_coach_1_id),TSP_first_name)
+    tw_PlayerBB.cb_logo.Text = TSP.GetSTeam(TSP_LOGO)
+    tw_PlayerBB.ed_nr.Text   = ""
+    tw_PlayerBB.Memo1.Lines.Clear
+    tw_PlayerBB.Memo1.Lines.Add("Head Coach")
+    'tw_foul.ed_Name.Text = UCASE(tsp.GetOfficialById(TSP.GetSTeam(TSP_coach_1_id),TSP_first_name)) & " " & UCASE(tsp.GetOfficialById(TSP.GetSTeam(TSP_coach_1_id), TSP_last_name))
+    tw_foul.ed_Name.Text = UCASE(tsp.GetOfficialById(TSP.GetSTeam(TSP_coach_1_id), TSP_last_name))
+    tw_foul.ed_fName.Text = UCASE(tsp.GetOfficialById(TSP.GetSTeam(TSP_coach_1_id),TSP_first_name))
+    tw_foul.rb_nametyp.ItemIndex=1
+'    tw_playerBB_bt_show_crawlClick nothing     ' Automatik nicht mehr gewünscht
+end sub
+
+sub pgMain_bt_RefereeBBClick (Sender)
+    tw_PlayerBB.ed_Name.Text = "SCHIEDSRICHTER"
+    tw_PlayerBB.ed_FName.Text = ""
+    tw_PlayerBB.ed_nr.Text   = ""
+    tw_PlayerBB.cb_logo.Text = ""
+    tw_PlayerBB.cb_two_lines.Checked = True
+    tw_PlayerBB.Memo1.Lines.Clear
+    tw_PlayerBB.Memo1.Lines.Add TSP.GetReferee(TSP_referee_1, TSP_FIRST_NAME) & " " & TSP.GetReferee(TSP_referee_1, TSP_LAST_NAME)
+    tw_PlayerBB.Memo1.Lines.Add left(TSP.GetReferee(TSP_referee_2, TSP_FIRST_NAME),1) & ". " & TSP.GetReferee(TSP_referee_2, TSP_LAST_NAME) &_
+                 " & " & left(TSP.GetReferee(TSP_referee_3, TSP_FIRST_NAME),1) & ". " & TSP.GetReferee(TSP_referee_3, TSP_LAST_NAME)
+  '  tw_playerBB_bt_show_crawlClick nothing      ' Automatik nicht mehr gewünscht
+end sub
+
+sub pgMain_bt_card1Click (Sender)
+    dim name
+    tw_topscorer.cb_name1.Items.Clear
+    tw_topscorer.cb_name2.Items.Clear
+    tw_topscorer.cb_name3.Items.Clear
+    tw_topscorer.cb_name4.Items.Clear
+    tw_topscorer.cb_name5.Items.Clear
+    tw_topscorer.cb_name6.Items.Clear
+    tw_topscorer.cb_name7.Items.Clear
+    tw_topscorer.cb_name8.Items.Clear
+    tw_topscorer.cb_name9.Items.Clear
+    tw_topscorer.cb_name10.Items.Clear
+    tw_topscorer.cb_name11.Items.Clear
+    tw_topscorer.cb_name12.Items.Clear
+    tw_topscorer.cb_name13.Items.Clear
+    tw_topscorer.cb_name14.Items.Clear
+    for each name in PLAYER_NAMES_A
+        tw_topscorer.cb_name1.Items.Add name
+        tw_topscorer.cb_name3.Items.Add name
+        tw_topscorer.cb_name5.Items.Add name
+        tw_topscorer.cb_name7.Items.Add name
+        tw_topscorer.cb_name9.Items.Add name
+        tw_topscorer.cb_name11.Items.Add name
+        tw_topscorer.cb_name13.Items.Add name
+    next
+    for each name in PLAYER_NAMES_B
+        tw_topscorer.cb_name2.Items.Add name
+        tw_topscorer.cb_name4.Items.Add name
+        tw_topscorer.cb_name6.Items.Add name
+        tw_topscorer.cb_name8.Items.Add name
+        tw_topscorer.cb_name10.Items.Add name
+        tw_topscorer.cb_name12.Items.Add name
+        tw_topscorer.cb_name14.Items.Add name
+    next
+
+    ' Get the top-3 scorers for each team
+    dim dress(6), pts(6), p, i
+    TSP.SaveSelection
+    tsp.SetTeamPos TSP_A
+    TSP.SetPlayerPos TSP_First, TSP_ALL, TSP_Actual
+    do
+        p = TSP.GetDPlayer(TSP_3)
+        if p > pts(0) then
+            pts(2)   = pts(1)
+            pts(1)   = pts(0)
+            pts(0)   = p
+            dress(2) = dress(1)
+            dress(1) = dress(0)
+            dress(0) = TSP.GetSPlayer(TSP_DRESS_NR)
+        elseif p > pts(1) then
+            pts(2)   = pts(1)
+            pts(1)   = p
+            dress(2) = dress(1)
+            dress(1) = TSP.GetSPlayer(TSP_DRESS_NR)
+        elseif p > pts(2) then
+            pts(2)   = p
+            dress(2) = TSP.GetSPlayer(TSP_DRESS_NR)
+        end if
+    loop while TSP.SetPlayerPos(TSP_Next, TSP_ALL, TSP_Actual)
+    
+    for i = 0 to 6
+        if pts(i) > 0 then
+            tw_topscorer.ComponentByName("ed_pts"  & 2*i+1).Text = pts(i)
+            tw_topscorer.ComponentByName("ed_rank" & 2*i+1).Text = ""  ' TODO <--- HIER KANN NOCH WAS REIN.... nur was
+            tw_topscorer.ComponentByName("cb_name" & 2*i+1).Text = tsp.GetPlayerByNR(TSP_HPlayer, dress(i), TSP_Actual, "FIRST_NAME") & " " & tsp.GetPlayerByNR(TSP_HPlayer, dress(i), TSP_Actual, "SECOND_NAME")
+        else
+            tw_topscorer.ComponentByName("ed_pts"  & 2*i+1).Text = ""
+            tw_topscorer.ComponentByName("ed_rank" & 2*i+1).Text = ""
+            tw_topscorer.ComponentByName("cb_name" & 2*i+1).Text = ""
+        end if
+    next
+
+    Erase pts
+    Erase dress
+
+    tsp.SetTeamPos TSP_B
+    TSP.SetPlayerPos TSP_First, TSP_ALL, TSP_Actual
+    do
+        p = TSP.GetDPlayer(TSP_3)
+        if p > pts(0) then
+            pts(2)   = pts(1)
+            pts(1)   = pts(0)
+            pts(0)   = p
+            dress(2) = dress(1)
+            dress(1) = dress(0)
+            dress(0) = TSP.GetSPlayer(TSP_DRESS_NR)
+        elseif p > pts(1) then
+            pts(2)   = pts(1)
+            pts(1)   = p
+            dress(2) = dress(1)
+            dress(1) = TSP.GetSPlayer(TSP_DRESS_NR)
+        elseif p > pts(2) then
+            pts(2)   = p
+            dress(2) = TSP.GetSPlayer(TSP_DRESS_NR)
+        end if
+    loop while TSP.SetPlayerPos(TSP_Next, TSP_ALL, TSP_Actual)
+
+    for i = 0 to 6
+        if pts(i) > 0 then
+            tw_topscorer.ComponentByName("ed_pts"  & 2*i+2).Text = pts(i)
+            tw_topscorer.ComponentByName("ed_rank" & 2*i+2).Text = ""  ' TODO <--- HIER KANN NOCH WAS REIN.... nur was
+            tw_topscorer.ComponentByName("cb_name" & 2*i+2).Text = tsp.GetPlayerByNR(TSP_HPlayer, dress(i), TSP_Actual, "FIRST_NAME") & " " & tsp.GetPlayerByNR(TSP_HPlayer, dress(i), TSP_Actual, "SECOND_NAME")
+        else
+            tw_topscorer.ComponentByName("ed_pts"  & 2*i+2).Text = ""
+            tw_topscorer.ComponentByName("ed_rank" & 2*i+2).Text = ""
+            tw_topscorer.ComponentByName("cb_name" & 2*i+2).Text = ""
+        end if
+    next
+
+    TSP.RestoreSelection
+
+
+    tw_topscorer.lbl_name1.Caption = SHORTNAME_A
+    tw_topscorer.lbl_name2.Caption = SHORTNAME_B
+    tw_topscorer.Visible = True
+    tw_topscorer.BringToFront
+end sub
+
+sub pgMain_bt_standingClick (Sender)
+    ' TODO: Daten aus dem OCX holen
+    fetch_standing_from_tsp
+    tw_standing.Visible = True
+    tw_standing.BringToFront
+end sub
+
+function ms_to_time(time_in_ms)
+    dim m : m = (int(time_in_ms / 60000) mod 60)
+    dim s : s = ((time_in_ms mod 60000) / 1000)
+    if len(m) < 2 then m = "0" & m
+    if len(s) < 2 then s = "0" & s
+    ms_to_time = m & ":" & s
+end function
+
+sub pgMain_bt_clockClick (Sender)
+    pgMain.bt_clock.Down = Sender.Down
+    pgMain.bt_clock1.Down = Sender.Down
+    if Sender.Down then
+        AllTV.TV__DSS_Show ms_to_time(TSP.GetTime(TSP_Time)), pgMain.ed_shortname_a.Text, pgMain.ed_shortname_b.Text, TSP.GetTime(TSP_HalfTimeCaption, TSP.GetTime(TSP_HalfTime)), TSP.GetScore(0, TSP_A), TSP.GetScore(0, TSP_B), pgmain.ShotClock.Seconds,LOGO_A,LOGO_B
+    else
+        AllTV.TV__DSS_Hide
+    end if
+end sub
+
+sub Update_Clock()
+    AllTV.TV__TimeChange ms_to_time(TSP.GetTime(TSP_Time))
+    pgMain.lbl_clock.Caption = ms_to_time(TSP.GetTime(TSP_Time))
+end sub
+
+sub pgMain_bt_Winclk_UDP_SettingClick (Sender)
+    System.UDP_CLOCK.Active = False
+    System.UDP_CLOCK.ShowSettingsDialog
+    System.UDP_CLOCK.Active = True
+end sub
+
+sub change_UDP_connection (Sender)
+    System.UDP_CLOCK.Active  = not System.UDP_CLOCK.Active
+    System.MIC_PARSER.Active = System.UDP_CLOCK.Active
+end sub
+
+sub pgMain_bt_shotclockClick (Sender)
+    pg_table.cb_shotclock.Checked = False     ' Wenn der nutzer die ShotClock ändert soll sie nicht automatisch wieder reinkommen!
+    if Sender.Down then
+        AllTV.TV__Show_Shotclock pgmain.ShotClock.Seconds
+    else
+        AllTV.TV__Hide_Shotclock
+    end if
+end sub
+
+sub pgMain_bt_foulsClick (Sender)
+    dim id : id=TSP.GetTPlayer(TSP_player_id)
+    tw_foul.ed_Name.Text = TSP.GetTPlayer(TSP_PLAYER_NAME)
+    tw_foul.ed_Name.Text = TSP_get_info_from_db("PLAYERS_1","second_name","db_id",id)                          ' Wenn mal kein Name im Dialog Fenster erscheint, dann wurde der Spieler anscheinend ohne Namen in der Databar abgespeichert.
+    tw_foul.ed_FName.Text = TSP_get_info_from_db("PLAYERS_1","first_name","db_id",id)
+    tw_foul.ed_nr.Text   = TSP.GetTPlayer(TSP_DRESS_NR)
+    tw_foul.cb_logo.Text = TSP.GetSTeam(TSP_logo)
+    tw_foul.cb_technisch.Checked = False
+    tw_foul.cb_unsportlich.Checked = False
+    tw_foul.rb_nametyp.ItemIndex=0
+    dim fouls : fouls = EmptyToZero(TSP.GetDPlayer(21))
+    if cInt(fouls) = 0 then fouls = 1                    ' Wird schon einen Grund geben warum der OP den Foul Button drückt
+    if fouls >= 5 then
+        tw_foul.rg_foul.ItemIndex = 4
+    else
+        tw_foul.rg_foul.ItemIndex = fouls - 1
+    end if
+    tw_foul.Visible = true
+    tw_foul.BringToFront
+end sub
+
+sub pgMain_bt_tvTippClick (Sender)
+    tw_tvTipps.Visible = True
+    tw_tvTipps.BringToFront
+end sub
+
+sub pgMain_bt_seriesClick (Sender)
+    tw_series.Visible = True
+    tw_series.BringToFront
+end sub
+
+sub pgMain_ShotClockSecondChanged (Sender, Hours, Minutes, Seconds, Miliseconds)
+    if Seconds <= 10 then
+        pgMain.ShotClock.Font.Color = clRed
+    else
+        pgMain.ShotClock.Font.Color = clSilver
+    end if
+end sub
+
+sub pgMain_Image1Click (Sender)
+    msgbox Sender.Hint
+end sub
+
+
+
+sub pgMain_bt_quotenClick (Sender)
+    tw_quoten.ed_teamA_1.Text=SHORTNAME_A
+    tw_quoten.ed_teamA_2.Text=SHORTNAME_A
+    tw_quoten.ed_teamB_1.Text=SHORTNAME_B
+    tw_quoten.ed_teamB_2.Text=SHORTNAME_B
+    tw_quoten.Visible = True
+    tw_quoten.BringToFront
+end sub
+
+sub pgMain_Button1Click (Sender)
+    dim i
+    for i = 0 to cc.SF.CCParentComponentCount - 1
+        if cc.sf.CCParentComponent(i).ComponentType = "TccToolWindow" then
+            cc.sf.CCParentComponent(i).left = 1
+            cc.sf.CCParentComponent(i).top = 1
+        end if
+    next
+end sub
+
+sub pgMain_bt_SponsorClick (Sender)
+    dim delay : delay = cint(EmptyToZero(pgMain.ed_dauer.Text)) - 1
+    if delay < 1 then delay = 1 end if
+    if pgMain.rb_sponsor.ItemIndex=0 then
+        AllTV.TV_Show_Admiral_Sponsor(delay)
+    else
+        AllTV.TV_Show_Snicker_Sponsor(delay)
+    end if
+end sub
+
+sub pgMain_bt_clearClick (Sender)
+    if msgbox("Sicher?", vbYesNo) = vbYes then pgMain.list_sponsoren.Items.Clear
+end sub
+
+sub pgMain_bt_hashtagMouseUp (Sender, Button, Shift, X, Y)
+    AllTV.TV__Hashtag (Button = 1)
+end sub
+
+sub pgMain_Click (Sender)
+  ' script pgMain_Click generated on 2/13/2014 at 3:08:25 PM
+  ' description of params:
+  ' Sender as IccPageWindow
+
+end sub
+
+sub pgMain_bt_statsBBClick (Sender)
+    dim pName : pName = TSP.GetTPlayer(TSP_PLAYER_NAME)
+    tw_BBStats.ed_Name.Text = pName
+    dim id : id=TSP.GetTPlayer(TSP_player_id)                          ' Wenn mal kein Name im Dialog Fenster erscheint, dann wurde der Spieler anscheinend ohne Namen in der Databar abgespeichert.
+    tw_BBStats.ed_Name.Text = TSP_get_info_from_db("PLAYERS_1","second_name","db_id",id)                          ' Wenn mal kein Name im Dialog Fenster erscheint, dann wurde der Spieler anscheinend ohne Namen in der Databar abgespeichert.
+    tw_BBStats.ed_FName.Text = TSP_get_info_from_db("PLAYERS_1","first_name","db_id",id)
+    tw_BBStats.ed_nr.Text   = TSP.GetTPlayer(TSP_DRESS_NR)
+    tw_BBStats.cb_logo.Text = TSP.GetSTeam(TSP_logo)         ' GGF einfach den Spieler aus dem DataBar löschen und nochmal versuchen!
+    tw_BBStats.Memo1.Lines.Clear
+    tw_BBStats.db_bbstats.LoadData UCase(pName)
+    tw_BBStats.Visible = true
+    tw_BBStats.BringToFront
+end sub
+
+sub pgMain_rb_sponsorClick (Sender)
+  ' script pgMain_rb_sponsorClick generated on 4/2/2014 at 9:42:37 AM
+  ' description of params:
+  ' Sender as IccRadioGroup
+
+end sub
+
+sub pgMain_bt_freegfxClick (Sender)
+    if pgMain.cb_freegfxhidedss.Checked=true then
+        Hide_DSS
+    end if
+    AllTV.TV__FreeGfx pgMain.ed_freegfx.Text
+end sub
+
+sub pgMain_bt_tv_aufstellung_imageClick (Sender)
+    dim i : i = 0
+    dim k : k = 0
+    TSP.SaveSelection
+    TSP.SetPlayerPos TSP_First, TSP_I, TSP_Actual
+    Do
+        i = TSP.GetTPlayer(TSP_dummy_2)
+        cc.SF.DebugText TSP.GetTPlayer(TSP_FIRST_NAME)
+        if i > 0 and i <6 then
+            k = k + 1
+            tw_startingv_image.ComponentByName("tb_nr_"&i).Text=TSP.GetTPlayer(TSP_dress_nr)
+            tw_startingv_image.ComponentByName("tb_fname_"&i).Text=TSP.GetHPlayer(TSP_FIRST_NAME)
+            tw_startingv_image.ComponentByName("tb_name_"&i).Text=TSP.GetHPlayer(TSP_SECOND_NAME)
+        end if
+    Loop While TSP.SetPlayerPos(TSP_Next, TSP_I, TSP_Actual)
+
+    TSP.RestoreSelection
+    
+    tw_startingv_image.cb_logo.Text = TSP.GetSTeam(TSP_LOGO)
+    tw_startingv_image.tb_hl.Text = "Starting 5 - " & TSP.GetSTeam(TSP_TV_NAME)
+     cc.sf.DebugText k
+
+    if k <> 5 then msgbox "Keine 5 Spieler nominiert?!"
+    if k = 0 then exit sub
+    tw_startingv_image.Visible=true
+    tw_startingv_image.BringToFront
+    tw_startingv_image_cb_logoChange (0)
+end sub
+
+sub pgMain_bt_tv_aufstellung_vbClick (Sender)
+    dim i : i = 0
+    dim k : k = 0
+    TSP.SaveSelection
+    TSP.SetPlayerPos TSP_First, TSP_I, TSP_Actual
+    Do
+        i = TSP.GetTPlayer(TSP_dummy_2)
+        if i>0 and i<6 then
+            k = k + 1
+            tw_startingv_vb.ComponentByName("tb_fname_"&i).Text=TSP.GetHPlayer(TSP_FIRST_NAME)
+            tw_startingv_vb.ComponentByName("tb_name_"&i).Text=TSP.GetHPlayer(TSP_SECOND_NAME)
+            tw_startingv_vb.ComponentByName("tb_nr_"&i).Text=TSP.GetTPlayer(TSP_DRESS_NR)
+        end if
+    Loop While TSP.SetPlayerPos(TSP_Next, TSP_I, TSP_Actual)
+
+    TSP.RestoreSelection
+
+    tw_startingv_vb.cb_logo.Text = TSP.GetSTeam(TSP_LOGO)
+     tw_startingv_vb.tb_hl.Text = "Starting 5 - " & TSP.GetSTeam(TSP_TV_NAME)
+
+
+    if k <> 5 then msgbox "Keine 5 Spieler nominiert?!"
+    if k = 0 then exit sub
+    tw_startingv_vb.Visible=true
+    tw_startingv_vb.BringToFront
+    tw_startingv_vb_cb_logoChange (0)
+end sub
+
+sub pgMain_btn_foul_a_upClick (Sender)
+    dim i
+    i=pgMain.tb_foul_a.Text
+    if i <5  then
+        i=i+1
+        pgMain.tb_foul_a.Text=i
+        AllTV.TV__FoulUp i,"a"
+    end if
+
+end sub
+
+sub pgMain_btn_foul_a_downClick (Sender)
+    dim i
+    i=pgMain.tb_foul_a.Text
+    if i >0 then
+        i=0
+        pgMain.tb_foul_a.Text=i
+        AllTV.TV__FoulDown i,"a"
+    end if
+end sub
+
+sub pgMain_btn_foul_b_upClick (Sender)
+    dim i
+    i=pgMain.tb_foul_b.Text
+    if i <5 then
+        i=i+1
+        pgMain.tb_foul_b.Text=i
+        AllTV.TV__FoulUp i,"b"
+    end if
+end sub
+
+sub pgMain_btn_foul_b_downClick (Sender)
+ dim i
+    i=pgMain.tb_foul_b.Text
+    if i >0  then
+        i=0
+        pgMain.tb_foul_b.Text=i
+        AllTV.TV__FoulDown i,"b"
+    end if
+end sub
+
+sub pgMain_bt_dssinfoClick (Sender)
+    tw_dss_info.Visible=true
+    tw_dss_info.BringToFront
+    tw_info2.Visible=true
+    tw_info2.BringToFront
+end sub
+dim   ALL_PLAYERS
+sub pgMain_bt_statistik1Click (Sender)
+    ALL_PLAYERS=""
+    if len(ALL_PLAYERS) = 0 then
+     '   cc.sf.debugtext  "SELECT * FROM PLAYERS_2 INNER JOIN PLAYERS_1 ON PLAYERS_2.PLAYER_ID=PLAYERS_1.DB_ID WHERE team_id IN ("& teams &")"
+        If TSP.LoadSQLData("SELECT * FROM PLAYERS_1") Then
+        'If TSP.LoadSQLData("SELECT * FROM PLAYERS_2 INNER JOIN PLAYERS_1 ON PLAYERS_2.PLAYER_ID=PLAYERS_1.DB_ID") Then
+        If TSP.SetSQLPos("First") Then
+            Do
+                if len(ALL_PLAYERS) > 0 then
+                    ALL_PLAYERS = ALL_PLAYERS & ",""" & TSP.GetSQLData("first_name") & " " & TSP.GetSQLData("second_name") & """"
+                else
+                    ALL_PLAYERS = """" & TSP.GetSQLData("first_name") & " " & TSP.GetSQLData("second_name") & """"
+                end if
+            Loop While TSP.SetSQLPos("Next")
+       end if
+       'cc.sf.DebugText ALL_PLAYERS
+       end if
+     end if
+    AllTV.get_player_photos_vgl "MF",1
+
+    tw_PLAYER_COMPARE_REFRESH_DATA nothing
+    tw_player_compare_rg_statsTypeClick nothing    ' Daten Update triggern
+    tw_player_compare.Visible = True
+    tw_player_compare.BringToFront
+end sub
+
+sub pgMain_btn_specialdssClick (Sender)
+  ' script pgMain_btn_specialdssClick generated on 1/14/2015 at 11:49:08 AM
+  ' description of params:
+  ' Sender as IccButton
+    tw_special_dss.Visible=true
+    tw_special_dss.BringToFront
+end sub
+
+sub pgMain_bt_show_vorlauflogoClick (Sender)
+
+        dim k,i
+
+        'If TSP.LoadSQLData("SELECT * FROM TEAMS WHERE league_id='" & TSP.GetRound(TSP_LEAGUE_ID) & "'") Then
+        If TSP.LoadSQLData("SELECT * FROM TEAMS") Then
+            If TSP.SetSQLPos("First") Then
+                tw_vorlauflogo.cb_name1.UserData = tw_vorlauflogo.cb_name1.Text
+                tw_vorlauflogo.cb_name2.UserData = tw_vorlauflogo.cb_name2.Text
+                tw_vorlauflogo.cb_name1.Items.Clear
+                tw_vorlauflogo.cb_name2.Items.Clear
+
+
+                Do
+                    if tw_vorlauflogo.cb_name1.Items.IndexOf(TSP.GetSQLData("long_name")) = -1 then  tw_vorlauflogo.cb_name1.Items.Add TSP.GetSQLData("long_name")
+                    if tw_vorlauflogo.cb_name2.Items.IndexOf(TSP.GetSQLData("long_name")) = -1 then  tw_vorlauflogo.cb_name2.Items.Add TSP.GetSQLData("long_name")
+
+                Loop While TSP.SetSQLPos("Next")
+                tw_vorlauflogo.cb_name1.ItemIndex = tw_vorlauflogo.cb_name1.Items.IndexOf(tw_vorlauflogo.cb_name1.UserData)
+                tw_vorlauflogo.cb_name2.ItemIndex = tw_vorlauflogo.cb_name2.Items.IndexOf(tw_vorlauflogo.cb_name2.UserData)
+
+            end if
+        end if
+
+        tw_vorlauflogo.ed_score.Text =TSP.GetScore(0, TSP_A) + TSP.GetScore(1,TSP_A) & ":" & TSP.GetScore(0, TSP_B) + TSP.GetScore(1,TSP_B)
+        TSP.SaveSelection
+        TSP.SetTeamPos("A")
+        tw_vorlauflogo.cb_name1.ItemIndex = tw_vorlauflogo.cb_name1.Items.IndexOf(TSP.GetSTeam(TSP_LONG_NAME))
+        TSP.SetTeamPos("B")
+        tw_vorlauflogo.cb_name2.ItemIndex = tw_vorlauflogo.cb_name2.Items.IndexOf(TSP.GetSTeam(TSP_LONG_NAME))
+        TSP.RestoreSelection
+    tw_vorlauflogo.Visible=true
+end sub
+
+sub pgMain_bt_zwischenstandMouseUp (Sender, Button, Shift, X, Y)
+    if Button =0 then
+        dim i
+        dim Data : set Data = CreateObject("Scripting.Dictionary")
+        for i = 1 to TSP.GetTime(TSP_HalfTime)
+            Data.Item("SCOREA" & i) = TSP.GetScore(i, TSP_A)
+            Data.Item("SCOREB" & i) =  TSP.GetScore(i, TSP_B)
+            Data.Item("TEXT"  & i) = TSP.GetTime(TSP_HalfTimeCaption, i)
+            Data.Item("ITEMCOUNT") = i
+        next
+
+        Data.Item("ALL_SCORE") = TSP.GetScore(0, TSP_A) & ":" & TSP.GetScore(0, TSP_B)
+        Data.Item("NAME_A")    = SHORTNAME_A
+        Data.Item("NAME_B")    = SHORTNAME_B
+        Data.Item("LOGO_A")    = LOGO_A
+        Data.Item("LOGO_B")    = LOGO_B
+        Data.Item("PERIOD")    = TSP.GetTime(TSP_HalfTimeCaption, TSP.GetTime(TSP_HalfTime))
+
+        AllTV.TV__BB_ZwischenStand Data
+        set Data = Nothing
+    else
+        tw_zwischenstand_free.cb_name1.UserData = tw_zwischenstand_free.cb_name1.Text
+        tw_zwischenstand_free.cb_name2.UserData = tw_zwischenstand_free.cb_name2.Text
+        tw_zwischenstand_free.cb_name1.Items.Clear
+        tw_zwischenstand_free.cb_name2.Items.Clear
+        tsp.LoadSQLData("SELECT * FROM TEAMS WHERE league_id='" & TSP.GetRound(TSP_LEAGUE_ID) & "'")
+        tsp.SetSQLPos(TSP_First)
+        do
+            if tw_zwischenstand_free.cb_name1.Items.IndexOf(tsp.GetSQLData("tv_name")) = -1 then  tw_zwischenstand_free.cb_name1.Items.Add tsp.GetSQLData("tv_name")
+            if tw_zwischenstand_free.cb_name2.Items.IndexOf(tsp.GetSQLData("tv_name")) = -1 then  tw_zwischenstand_free.cb_name2.Items.Add tsp.GetSQLData("tv_name")
+        Loop While tsp.SetSQLPos(TSP_Next)
+
+        tw_zwischenstand_free.cb_name1.ItemIndex = tw_zwischenstand_free.cb_name1.Items.IndexOf(SHORTNAME_A)
+        tw_zwischenstand_free.cb_name2.ItemIndex = tw_zwischenstand_free.cb_name2.Items.IndexOf(SHORTNAME_B)
+
+        tw_zwischenstand_free.cb_logo1.ItemIndex = tw_zwischenstand_free.cb_logo1.Items.IndexOf(LOGO_A)
+        tw_zwischenstand_free.cb_logo2.ItemIndex = tw_zwischenstand_free.cb_logo2.Items.IndexOf(LOGO_B)
+
+        tw_zwischenstand_free.edt_score.Text = TSP.GetScore(0, TSP_A) & ":" & TSP.GetScore(0, TSP_B)
+        tw_zwischenstand_free.edt_period.Text     = TSP.GetTime(TSP_HalfTimeCaption, TSP.GetTime(TSP_HalfTime))
+        
+        for i = 1 to TSP.GetTime(TSP_HalfTime)
+            tw_zwischenstand_free.ComponentByName("edt_score_" & i).Text = TSP.GetScore(i, TSP_A)
+            tw_zwischenstand_free.ComponentByName("edt_scoreb_" & i).Text = TSP.GetScore(i, TSP_B)
+            tw_zwischenstand_free.ComponentByName("edt_text_" & i).Text = TSP.GetTime(TSP_HalfTimeCaption, i)
+        next
+
+        tw_zwischenstand_free.Visible = True
+        tw_zwischenstand_free.BringToFront
+    end if
+end sub
+
+sub pgMain_bt_standingsClick (Sender)
+    tw_standing_2.Visible = True
+    tw_standing_2.BringToFront
+end sub
+
+sub pgMain_btn_previewClick (Sender)
+  ' script pgMain_btn_previewClick generated on 1/12/2016 at 11:04:44 AM
+  ' description of params:
+  ' Sender as IccButton
+tw_preview.Visible=true
+tw_preview.BringToFront
+end sub
+
+sub pgMain_bt_moderatorClick (Sender)
+    tw_moderator.Visible=true
+    tw_moderator.BringToFront
+
+end sub
+
+sub tw_vorlauf_bt_ttreeClick (Sender)
+dim i
+    for i=1 to 14
+        tw_ttree.ComponentByName("cb_team_"&i).items.Clear
+    next
+    tw_ttree.cb_team_9.Items.Add "Gewinner VF 1"
+    tw_ttree.cb_team_10.Items.Add "Gewinner VF 2"
+    tw_ttree.cb_team_11.Items.Add "Gewinner VF 3"
+    tw_ttree.cb_team_12.Items.Add "Gewinner VF 4"
+    tw_ttree.cb_team_13.Items.Add "Gewinner HF 1"
+    tw_ttree.cb_team_14.Items.Add "Gewinner HF 2"
+    If TSP.LoadSQLData("SELECT * FROM TEAMS") Then
+        If TSP.SetSQLPos("First") Then
+            Do
+                for i=1 to 14
+                    if tw_ttree.ComponentByName("cb_team_"&i).Items.IndexOf(TSP.GetSQLData("short_name")) = -1 then  tw_ttree.ComponentByName("cb_team_"&i).Items.Add TSP.GetSQLData("short_name")
+                next
+            Loop While TSP.SetSQLPos("Next")
+        end if
+    end if
+     for i=1 to 14
+        tw_ttree.ComponentByName("cb_team_"&i).ItemIndex=0
+    next
+    tw_ttree.Visible=true
+    tw_ttree.BringToFront
+end sub
+
+sub pgMain_Btn_Sponsor3Click (Sender)
+    AllTV.TV__PP  0
+end sub
+
+sub pgMain_bt_StatlistClick (Sender)
+    dim name
+    tw_statlist.cb_name1.Items.Clear
+    tw_statlist.cb_name2.Items.Clear
+    tw_statlist.cb_name3.Items.Clear
+    tw_statlist.cb_name4.Items.Clear
+    tw_statlist.cb_name5.Items.Clear
+    tw_statlist.cb_name6.Items.Clear
+    tw_statlist.cb_name7.Items.Clear
+    tw_statlist.cb_name8.Items.Clear
+    tw_statlist.cb_name9.Items.Clear
+    tw_statlist.cb_name10.Items.Clear
+    tw_statlist.cb_name11.Items.Clear
+    tw_statlist.cb_name12.Items.Clear
+    tw_statlist.cb_name13.Items.Clear
+    tw_statlist.cb_name14.Items.Clear
+    for each name in PLAYER_NAMES_A
+        tw_statlist.cb_name1.Items.Add name
+        tw_statlist.cb_name3.Items.Add name
+        tw_statlist.cb_name5.Items.Add name
+        tw_statlist.cb_name7.Items.Add name
+        tw_statlist.cb_name9.Items.Add name
+        tw_statlist.cb_name11.Items.Add name
+        tw_statlist.cb_name13.Items.Add name
+    next
+    for each name in PLAYER_NAMES_B
+        tw_statlist.cb_name2.Items.Add name
+        tw_statlist.cb_name4.Items.Add name
+        tw_statlist.cb_name6.Items.Add name
+        tw_statlist.cb_name8.Items.Add name
+        tw_statlist.cb_name10.Items.Add name
+        tw_statlist.cb_name12.Items.Add name
+        tw_statlist.cb_name14.Items.Add name
+    next
+
+    ' Get the top-3 scorers for each team
+    dim dress(6), pts(6), p, i
+    TSP.SaveSelection
+    tsp.SetTeamPos TSP_A
+    TSP.SetPlayerPos TSP_First, TSP_ALL, TSP_Actual
+    do
+        p = TSP.GetDPlayer(TSP_3)
+        if p > pts(0) then
+            pts(2)   = pts(1)
+            pts(1)   = pts(0)
+            pts(0)   = p
+            dress(2) = dress(1)
+            dress(1) = dress(0)
+            dress(0) = TSP.GetSPlayer(TSP_DRESS_NR)
+        elseif p > pts(1) then
+            pts(2)   = pts(1)
+            pts(1)   = p
+            dress(2) = dress(1)
+            dress(1) = TSP.GetSPlayer(TSP_DRESS_NR)
+        elseif p > pts(2) then
+            pts(2)   = p
+            dress(2) = TSP.GetSPlayer(TSP_DRESS_NR)
+        end if
+    loop while TSP.SetPlayerPos(TSP_Next, TSP_ALL, TSP_Actual)
+
+    for i = 0 to 6
+        if pts(i) > 0 then
+            tw_statlist.ComponentByName("ed_pts"  & 2*i+1).Text = pts(i)
+            tw_statlist.ComponentByName("ed_rank" & 2*i+1).Text = ""  ' TODO <--- HIER KANN NOCH WAS REIN.... nur was
+            tw_statlist.ComponentByName("cb_name" & 2*i+1).Text = tsp.GetPlayerByNR(TSP_HPlayer, dress(i), TSP_Actual, "FIRST_NAME") & " " & tsp.GetPlayerByNR(TSP_HPlayer, dress(i), TSP_Actual, "SECOND_NAME")
+        else
+            tw_statlist.ComponentByName("ed_pts"  & 2*i+1).Text = ""
+            tw_statlist.ComponentByName("ed_rank" & 2*i+1).Text = ""
+            tw_statlist.ComponentByName("cb_name" & 2*i+1).Text = ""
+        end if
+    next
+
+    Erase pts
+    Erase dress
+
+    tsp.SetTeamPos TSP_B
+    TSP.SetPlayerPos TSP_First, TSP_ALL, TSP_Actual
+    do
+        p = TSP.GetDPlayer(TSP_3)
+        if p > pts(0) then
+            pts(2)   = pts(1)
+            pts(1)   = pts(0)
+            pts(0)   = p
+            dress(2) = dress(1)
+            dress(1) = dress(0)
+            dress(0) = TSP.GetSPlayer(TSP_DRESS_NR)
+        elseif p > pts(1) then
+            pts(2)   = pts(1)
+            pts(1)   = p
+            dress(2) = dress(1)
+            dress(1) = TSP.GetSPlayer(TSP_DRESS_NR)
+        elseif p > pts(2) then
+            pts(2)   = p
+            dress(2) = TSP.GetSPlayer(TSP_DRESS_NR)
+        end if
+    loop while TSP.SetPlayerPos(TSP_Next, TSP_ALL, TSP_Actual)
+
+    for i = 0 to 6
+        if pts(i) > 0 then
+            tw_statlist.ComponentByName("ed_pts"  & 2*i+2).Text = pts(i)
+            tw_statlist.ComponentByName("ed_rank" & 2*i+2).Text = ""  ' TODO <--- HIER KANN NOCH WAS REIN.... nur was
+            tw_statlist.ComponentByName("cb_name" & 2*i+2).Text = tsp.GetPlayerByNR(TSP_HPlayer, dress(i), TSP_Actual, "FIRST_NAME") & " " & tsp.GetPlayerByNR(TSP_HPlayer, dress(i), TSP_Actual, "SECOND_NAME")
+        else
+            tw_statlist.ComponentByName("ed_pts"  & 2*i+2).Text = ""
+            tw_statlist.ComponentByName("ed_rank" & 2*i+2).Text = ""
+            tw_statlist.ComponentByName("cb_name" & 2*i+2).Text = ""
+        end if
+    next
+
+    TSP.RestoreSelection
+
+
+    tw_statlist.lbl_name1.Caption = SHORTNAME_A
+    tw_statlist.lbl_name2.Caption = SHORTNAME_B
+    tw_statlist.Visible = True
+    tw_statlist.BringToFront
+end sub
+
+</script_body>
+</script>

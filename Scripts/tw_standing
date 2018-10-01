@@ -1,0 +1,172 @@
+<script>
+<script_header>
+</script_header>
+<script_body>
+
+sub tw_standing_bt_Erg1Click (Sender)
+    dim i
+    dim Data : Set Data = CreateObject("Scripting.Dictionary")
+    dim k : k = 0
+    dim offset
+    if Right(Sender.Name, 1) = "6" then offset = 6 else offset = 0
+    for i = 1 to tw_standing.grid.RowCount - 1
+        if Trim(tw_standing.grid.Cells(i, GetColIdx(tw_standing.grid, "Team"))) <> "" then
+            k = k + 1
+            Data.Item("NAME"  & k) = tw_standing.grid.Cells(offset + i, GetColIdx(tw_standing.grid, "Team"))
+            Data.Item("LOGO"  & k) =  TSP_get_info_from_db("TEAMS", "LOGO", "LONG_NAME", Data.Item("NAME"  & k))
+            if Right(Sender.Name, 1) = "6" or Right(Sender.Name, 1) = "7" then
+                if(offset+i) >6 then
+                    Data.Item("PLACE" & k) = (offset+i)-6
+                else
+                    Data.Item("PLACE" & k) = tw_standing.grid.Cells(offset + i, GetColIdx(tw_standing.grid, "#"))
+                end if
+            else
+                Data.Item("PLACE" & k) = tw_standing.grid.Cells(offset + i, GetColIdx(tw_standing.grid, "#"))
+            end if
+            Data.Item("GAMES" & k) = tw_standing.grid.Cells(offset + i, GetColIdx(tw_standing.grid, "Sp."))
+            Data.Item("WON"   & k) = tw_standing.grid.Cells(offset + i, GetColIdx(tw_standing.grid, "Siege"))
+            Data.Item("LOST"  & k) = tw_standing.grid.Cells(offset + i, GetColIdx(tw_standing.grid, "Niederl."))
+            Data.Item("PTS"   & k) = tw_standing.grid.Cells(offset + i, GetColIdx(tw_standing.grid, "Pkt."))
+            Data.Item("HL"    & k) =(tw_standing.grid.Cells(offset + i, GetColIdx(tw_standing.grid, "HL?")) = "X")
+            Data.Item("TREND" & k) = tw_standing.grid.Cells(offset + i, GetColIdx(tw_standing.grid, "Trend"))
+        end if
+    next
+    if Right(Sender.Name, 1) = "6" then k=5
+    if Right(Sender.Name, 1) = "5" then k=6
+    Data.Item("ITEMCOUNT_TAB") = k
+    if Right(Sender.Name, 1) = "6" then offset = 3 else offset = 0
+    k = 0
+    for i =  1 to tw_standing.grid2.RowCount - 1
+        if Trim(tw_standing.grid2.Cells(i, GetColIdx(tw_standing.grid2, "Team 1"))) <> "" then
+            k = k + 1
+            Data.Item("NAME_A" & k) = tw_standing.grid2.Cells(offset + i, GetColIdx(tw_standing.grid2, "Team 1"))
+            Data.Item("NAME_B" & k) = tw_standing.grid2.Cells(offset + i, GetColIdx(tw_standing.grid2, "Team 2"))
+            Data.Item("LOGO_A" & k) = TSP_get_info_from_db("TEAMS", "LOGO", "LONG_NAME", tw_standing.grid2.Cells(offset + i, GetColIdx(tw_standing.grid2, "Team 1")))
+            Data.Item("LOGO_B" & k) = TSP_get_info_from_db("TEAMS", "LOGO", "LONG_NAME", tw_standing.grid2.Cells(offset + i, GetColIdx(tw_standing.grid2, "Team 2")))
+            if tw_standing.grid2.Cells(offset + i, 5) <> "" then
+                Data.Item("RESULT" & k) = tw_standing.grid2.Cells(offset + i,5) & " "&tw_standing.grid2.Cells(offset + i, GetColIdx(tw_standing.grid2, "Result"))
+            else
+                Data.Item("RESULT" & k) = tw_standing.grid2.Cells(offset + i, GetColIdx(tw_standing.grid2, "Result"))
+            end if
+            Data.Item("EHL"    & k) =(tw_standing.grid2.Cells(offset + i, GetColIdx(tw_standing.grid2, "HL?")) = "X")
+        end if
+    next
+    if Right(Sender.Name, 1) = "6" then k=2
+    if Right(Sender.Name, 1) = "5" then k=3
+    Data.Item("ITEMCOUNT_ERG") = k
+    Data.Item("HEAD_TITLE")    = tw_standing.ed_title.text
+    Data.Item("TITLE")         = tw_standing.ed_header.Text
+    Data.Item("BACKGROUND")    = pg_table.cb_background.Checked
+    Data.Item("ANIM_TYPE")     = Right(Sender.Name, 1)  ' Es gibt 6 verschiedene Grafiken
+
+    Hide_DSS
+    AllTV.TV__VB_Standing Data
+    Set Data = Nothing
+end sub
+
+
+sub fetch_standing_from_tsp()
+
+end sub
+
+sub tw_standing_gridDblClick (Sender)
+    if Sender.col =5 then
+        select case Sender.Cells(Sender.row,5)
+        case ""
+            Sender.Cells(Sender.row,5)="1.VT"
+        case "1.VT"
+            Sender.Cells(Sender.row,5)="2.VT"
+        case "2.VT"
+            Sender.Cells(Sender.row,5)="3.VT"
+        case "3.VT"
+            Sender.Cells(Sender.row,5)="4.VT"
+        case "4.VT"
+            Sender.Cells(Sender.row,5)="OT"
+        case "OT"
+            Sender.Cells(Sender.row,5)=""
+        case else
+        Sender.Cells(Sender.row,5)=""
+        end select
+    else
+        if  Sender.Cells(Sender.row, GetColIdx(Sender, "HL?")) = "X" then
+            Sender.Cells(Sender.row, GetColIdx(Sender, "HL?")) = ""
+        else
+            Sender.Cells(Sender.row, GetColIdx(Sender, "HL?")) = "X"
+        end if
+    end if
+end sub
+
+sub tw_standing_bt_importClick (Sender)
+    dim i : i = 0
+    dim j
+    dim tname,team9,found
+    tw_standing.Grid2.Clear(False)
+
+    TSP.SetRoundPos(TSP_First)
+    do
+        i = i + 1
+        if i <= 4 then
+            tw_standing.Grid2.Cells(i, 1) = TSP.GetRound(TSP_team_a_name)
+            tw_standing.Grid2.Cells(i, 2) = TSP.GetRound(TSP_score_a) & ":" & TSP.GetRound(TSP_score_b)
+            tw_standing.Grid2.Cells(i, 3) = TSP.GetRound(TSP_team_b_name)
+        end if
+    loop while TSP.SetRoundPos(TSP_Next)
+    
+    tw_standing.ed_header.text = tsp.GetRound(TSP_round) & ". Runde"
+    i = 0
+    tw_standing.grid.Clear(False)
+    team9=false
+    TSP.SetRankPos TSP_First
+    do
+        i = i + 1
+        if i <= 9 then
+            tw_standing.grid.Cells(i, 1) = TSP.GetRank("rank")&"."
+            tw_standing.grid.Cells(i, 2) = ""       ' <-- TODO:  Kann man den Trend irgendwie aus der DB bestimmen?
+            tname= TSP.GetTeamByID(TSP_STeam, TSP.GetRank(TSP_team_id), TSP_long_name)
+            'cc.sf.DebugText ">>"&TSP.GetRank(TSP_team_id)
+            tw_standing.grid.Cells(i, 3) = tname
+            tw_standing.grid.Cells(i, 4) = TSP.GetRank("games")
+            tw_standing.grid.Cells(i, 5) = TSP.GetRank(TSP_won)
+            tw_standing.grid.Cells(i, 6) = TSP.GetRank(TSP_lost)
+            tw_standing.grid.Cells(i, 7) = TSP.GetRank(TSP_points_1)
+            if team9 =false then
+                found =false
+                for j=1 to 4
+                    if tname= tw_standing.Grid2.Cells(j, 1) or tname= tw_standing.Grid2.Cells(j, 3) then
+                        found=true
+                    end if
+                next
+                if found=false then
+                    tw_standing.Grid2.Cells(5, 1)=tname
+                    team9=true
+                end if
+            end if
+        end if
+    Loop While TSP.SetRankPos(TSP_Next)
+
+    
+end sub
+
+sub tw_standing_bt_clearClick (Sender)
+    if msgbox("Sicher?!", vbYesNo) = vbYes then
+        tw_standing.grid.Clear(False)
+        tw_standing.Grid2.Clear(False)
+    end if
+end sub
+
+sub tw_standing_Close (Sender)
+  ' script tw_standing_Close generated on 05.11.2013 at 13:01:05
+  ' description of params:
+  ' Sender as IccToolWindow
+
+end sub
+
+sub tw_standing_gridMouseUp (Sender, Button, Shift, X, Y)
+   dim i : i = 0
+   for i = 1 to tw_standing.grid.RowCount - 1
+        tw_standing.grid.Cells(i, 1)=i&"."
+   next
+end sub
+
+</script_body>
+</script>

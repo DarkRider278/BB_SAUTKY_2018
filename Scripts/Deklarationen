@@ -1,0 +1,14 @@
+<script>
+<script_header>
+</script_header>
+<script_body>
+dim AllTV
+
+dim DB : set DB = System.BdeDataSource1
+
+' Damit spare ich mir einen Haufen Datenbank Abfragen. -> Werden bei TSP_MATCH_CHANGE gefüllt
+dim LOGO_A, LOGO_B, NAME_A, NAME_B, SHORTNAME_A, SHORTNAME_B, NOC_A, NOC_B
+dim PLAYER_NAMES_A(), PLAYER_NAMES_B(), LASTNAMES_A(), LASTNAMES_B()
+
+</script_body>
+</script>

@@ -1,0 +1,186 @@
+<script>
+<script_header>
+</script_header>
+<script_body>
+function decode_name(name)
+    if instr(name, ",") > 0 then
+        decode_name = split(name, ", ")(1) & " " & split(name, ", ")(0)
+    
+    else
+        decode_name = name
+    end if
+end function
+
+
+
+sub tw_topscorer_bt_showClick (Sender)
+    dim Data : set Data = CreateObject("Scripting.Dictionary")
+    Data.Item("NAME_A1") = decode_name(tw_topscorer.cb_name1.Text)
+    Data.Item("NAME_A2") = decode_name(tw_topscorer.cb_name3.Text)
+    Data.Item("NAME_A3") = decode_name(tw_topscorer.cb_name5.Text)
+    Data.Item("NAME_B1") = decode_name(tw_topscorer.cb_name2.Text)
+    Data.Item("NAME_B2") = decode_name(tw_topscorer.cb_name4.Text)
+    Data.Item("NAME_B3") = decode_name(tw_topscorer.cb_name6.Text)
+    Data.Item("PTS_A1")  = tw_topscorer.ed_pts1.Text
+    Data.Item("PTS_A2")  = tw_topscorer.ed_pts3.Text
+    Data.Item("PTS_A3")  = tw_topscorer.ed_pts5.Text
+    Data.Item("PTS_B1")  = tw_topscorer.ed_pts2.Text
+    Data.Item("PTS_B2")  = tw_topscorer.ed_pts4.Text
+    Data.Item("PTS_B3")  = tw_topscorer.ed_pts6.Text
+    Data.Item("RANK_A1") = tw_topscorer.ed_rank1.Text
+    Data.Item("RANK_A2") = tw_topscorer.ed_rank3.Text
+    Data.Item("RANK_A3") = tw_topscorer.ed_rank5.Text
+    Data.Item("RANK_B1") = tw_topscorer.ed_rank2.Text
+    Data.Item("RANK_B2") = tw_topscorer.ed_rank4.Text
+    Data.Item("RANK_B3") = tw_topscorer.ed_rank6.Text
+    Data.Item("LOGO_A")  = LOGO_A
+    Data.Item("LOGO_B")  = LOGO_B
+    Data.Item("TEAM_A")  = SHORTNAME_A
+    Data.Item("TEAM_B")  = SHORTNAME_B
+    Data.item("SCORE") = TSP.GetScore(0, TSP_A) & ":" & TSP.GetScore(0, TSP_B)
+    Data.Item("HL")  = tw_topscorer.cb_headline.text
+    AllTV.TV__BB_Topscorer Data
+    set Data = Nothing
+end sub
+
+sub tw_topscorer_cb_name1Change (Sender)
+    if (Sender.UserData = True) then exit sub
+    dim i,k
+    if len(Sender.Text) < 1 then exit sub
+    for i = 0 to Sender.Items.Count - 1
+        if Ucase(Sender.text) = UCase(left(sender.Items.Strings(i), len(Sender.Text))) then
+            k = len(Sender.Text)
+            Sender.Text      = sender.Items.Strings(i)
+            Sender.SelStart  = k
+            Sender.SelLength = len(Sender.Text) - k
+            exit for
+        end if
+    next
+end sub
+
+sub tw_topscorer_cb_name1KeyDown (Sender, Key, Shift)
+    Sender.UserData = ( (Key < 65) or (Key > 172) ) ' Steuerzeichen ignorieren
+end sub
+
+
+
+sub tw_topscorer_bt_down1Click (Sender)
+    dim i : i = cInt(right(Sender.name, 2))
+    dim tmp
+    if i > 6 then
+        i = i - 6
+        tmp = tw_topscorer.ComponentByName("ed_rank" & 2*(i+1)).Text
+        tw_topscorer.ComponentByName("ed_rank" & 2*(i+1)).Text = tw_topscorer.ComponentByName("ed_rank" & 2*i).text
+        tw_topscorer.ComponentByName("ed_rank" & 2*i).Text = tmp
+
+        tmp = tw_topscorer.ComponentByName("ed_pts" & 2*(i+1)).Text
+        tw_topscorer.ComponentByName("ed_pts" & 2*(i+1)).Text = tw_topscorer.ComponentByName("ed_pts" & 2*i).text
+        tw_topscorer.ComponentByName("ed_pts" & 2*i).Text = tmp
+
+        tmp = tw_topscorer.ComponentByName("cb_name" & 2*(i+1)).Text
+        tw_topscorer.ComponentByName("cb_name" & 2*(i+1)).Text = tw_topscorer.ComponentByName("cb_name" & 2*i).text
+        tw_topscorer.ComponentByName("cb_name" & 2*i).Text = tmp
+    else
+        tmp = tw_topscorer.ComponentByName("ed_rank" & 2*i+1).Text
+        tw_topscorer.ComponentByName("ed_rank" & 2*i+1).Text = tw_topscorer.ComponentByName("ed_rank" & 2*i-1).text
+        tw_topscorer.ComponentByName("ed_rank" & 2*i-1).Text = tmp
+        
+        tmp = tw_topscorer.ComponentByName("ed_pts" & 2*i+1).Text
+        tw_topscorer.ComponentByName("ed_pts" & 2*i+1).Text = tw_topscorer.ComponentByName("ed_pts" & 2*i-1).text
+        tw_topscorer.ComponentByName("ed_pts" & 2*i-1).Text = tmp
+
+        tmp = tw_topscorer.ComponentByName("cb_name" & 2*i+1).Text
+        tw_topscorer.ComponentByName("cb_name" & 2*i+1).Text = tw_topscorer.ComponentByName("cb_name" & 2*i-1).text
+        tw_topscorer.ComponentByName("cb_name" & 2*i-1).Text = tmp
+    end if
+end sub
+
+sub tw_topscorer_bt_up1Click (Sender)
+    dim i : i = cInt(right(Sender.name, 2))
+    dim tmp
+    if i > 6 then
+        i = i - 5
+        tmp = tw_topscorer.ComponentByName("ed_rank" & 2*(i-1)).Text
+        tw_topscorer.ComponentByName("ed_rank" & 2*(i-1)).Text = tw_topscorer.ComponentByName("ed_rank" & 2*i).text
+        tw_topscorer.ComponentByName("ed_rank" & 2*i).Text = tmp
+
+        tmp = tw_topscorer.ComponentByName("ed_pts" & 2*(i-1)).Text
+        tw_topscorer.ComponentByName("ed_pts" & 2*(i-1)).Text = tw_topscorer.ComponentByName("ed_pts" & 2*i).text
+        tw_topscorer.ComponentByName("ed_pts" & 2*i).Text = tmp
+
+        tmp = tw_topscorer.ComponentByName("cb_name" & 2*(i-1)).Text
+        tw_topscorer.ComponentByName("cb_name" & 2*(i-1)).Text = tw_topscorer.ComponentByName("cb_name" & 2*i).text
+        tw_topscorer.ComponentByName("cb_name" & 2*i).Text = tmp
+    else
+        tmp = tw_topscorer.ComponentByName("ed_rank" & 2*i-1).Text
+        tw_topscorer.ComponentByName("ed_rank" & 2*i-1).Text = tw_topscorer.ComponentByName("ed_rank" & 2*i+1).text
+        tw_topscorer.ComponentByName("ed_rank" & 2*i+1).Text = tmp
+
+        tmp = tw_topscorer.ComponentByName("ed_pts" & 2*i-1).Text
+        tw_topscorer.ComponentByName("ed_pts" & 2*i-1).Text = tw_topscorer.ComponentByName("ed_pts" & 2*i+1).text
+        tw_topscorer.ComponentByName("ed_pts" & 2*i+1).Text = tmp
+
+        tmp = tw_topscorer.ComponentByName("cb_name" & 2*i-1).Text
+        tw_topscorer.ComponentByName("cb_name" & 2*i-1).Text = tw_topscorer.ComponentByName("cb_name" & 2*i+1).text
+        tw_topscorer.ComponentByName("cb_name" & 2*i+1).Text = tmp
+    end if
+end sub
+
+sub tw_topscorer_bt_show_vbClick (Sender)
+    dim Data : set Data = CreateObject("Scripting.Dictionary")
+    dim count :count=2
+    dim ct1:ct1=0
+    dim ct2:ct2=0
+    dim tmp
+    dim c
+    for c=0 to 6
+        tmp=tw_topscorer.ComponentByName("ed_pts" & 2*c+1).text
+        if tmp<>"" then
+            ct1=ct1+1
+            Data.Item("PTS_A"&ct1) =tmp
+            Data.Item("NAME_A"&ct1) = decode_name(tw_topscorer.ComponentByName("cb_name" & 2*c+1).text)
+            Data.Item("RANK_A"&ct1) = tw_topscorer.ComponentByName("ed_rank" & 2*c+1).text
+        end if
+        tmp=tw_topscorer.ComponentByName("ed_pts" & 2*c+2).text
+        if tmp<>"" then
+            ct2=ct2+1
+            Data.Item("NAME_B"&ct2) = decode_name(tw_topscorer.ComponentByName("cb_name" & 2*c+2).text)
+            Data.Item("PTS_B"&ct2) = tmp
+            Data.Item("RANK_B"&ct2) = tw_topscorer.ComponentByName("ed_rank" & 2*c+2).text
+        end if
+    next
+    if ct1>ct2 then
+        count=ct1
+    else
+        count=ct2
+    end if
+    Data.Item("COUNT")=count
+    Data.Item("COUNT1")=ct1
+    Data.Item("COUNT2")=ct2
+
+    Data.Item("LOGO_A")  = LOGO_A
+    Data.Item("LOGO_B")  = LOGO_B
+    Data.Item("TEAM_A")  = SHORTNAME_A
+    Data.Item("TEAM_B")  = SHORTNAME_B
+
+    Data.Item("HL")  = tw_topscorer.cb_headline.text
+    AllTV.TV__VB_Topscorer Data
+    set Data = Nothing
+end sub
+
+sub tw_topscorer_Close (Sender)
+  ' script tw_topscorer_Close generated on 1/13/2015 at 10:30:58 AM
+  ' description of params:
+  ' Sender as IccToolWindow
+
+end sub
+
+sub tw_topscorer_ed_rank1Change (Sender)
+  ' script tw_topscorer_ed_rank1Change generated on 1/12/2016 at 11:14:44 AM
+  ' description of params:
+  ' Sender as IccEdit
+
+end sub
+
+</script_body>
+</script>

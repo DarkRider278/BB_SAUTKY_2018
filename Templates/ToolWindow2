@@ -1,0 +1,15 @@
+object ToolWindow2: TccToolWindow
+  Tag = 3
+  Caption = 'ToolWindow2'
+  Color = clBtnFace
+  ClientAreaHeight = 116
+  ClientAreaWidth = 230
+  DockRow = 1
+  LastDock = frmMain.dckTop
+  TabOrder = 0
+  Visible = False
+  Floating = True
+  ParentColor = False
+  Float = True
+  SavedAtRunTime = True
+end

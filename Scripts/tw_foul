@@ -1,0 +1,126 @@
+<script>
+<script_header>
+</script_header>
+<script_body>
+ dim lastnr
+sub tw_foul_bt_showClick (Sender)
+
+   dim Data : Set Data = CreateObject("Scripting.Dictionary")
+   if Sender.down then
+        'if instr(tw_foul.ed_Name.text," ") >0 and tw_foul.rb_nametyp.ItemIndex<>2 then
+        if tw_foul.rb_nametyp.ItemIndex<>2 then
+            'Data.Item("NAME")      =  split(tw_foul.ed_Name.text," ")(1)
+            'Data.Item("FNAME")      =  Left(split(tw_foul.ed_Name.text," ")(0),1)&"."
+            Data.Item("NAME")      =  tw_foul.ed_Name.text
+            Data.Item("FNAME")      =  Left(tw_foul.ed_fName.text,1)&"."
+        else
+            Data.Item("NAME")      =  tw_foul.ed_Name.text
+            Data.Item("FNAME")      =  ""
+        end if
+        Data.Item("NR")      =  tw_foul.ed_nr.text
+        lastnr=     tw_foul.ed_nr.text
+        Data.Item("INFO")      =  (tw_foul.ed_foul.text )
+        Data.Item("LOGO")      =  tw_foul.cb_logo.Text
+        AllTV.TV__DSS_Info_Show(Data)
+
+        set Data = Nothing
+        tw_foul.cb_technisch.Checked = False
+        tw_foul.cb_unsportlich.Checked = False
+    else
+        Data.Item("NR")      =  lastnr
+        AllTV.TV__DSS_Info_Hide(Data)
+    end if
+end sub
+
+sub old_tw_foul_bt_showClick (Sender)
+
+    dim Data : Set Data = CreateObject("Scripting.Dictionary")
+    Data.Item("NAME")      = tw_foul.ed_Name.Text
+    Data.Item("NR")        = tw_foul.ed_nr.Text
+    Data.Item("LOGO")      = tw_foul.cb_logo.Text
+    Data.Item("LINE1")     = tw_foul.ed_foul.Text
+    Data.Item("ITEMCOUNT") = 1
+'    tw_foul.Visible = False
+    AllTV.TV__PlayerBB Data, false
+    set Data = Nothing
+    tw_foul.cb_technisch.Checked = False
+    tw_foul.cb_unsportlich.Checked = False
+end sub
+
+sub tw_foul_rg_foulClick (Sender)
+    dim text
+    text=""
+    if tw_foul.cb_technisch.checked then
+        text = "Techn. Foul - "
+    elseif tw_foul.cb_unsportlich.Checked then
+        text = "Unsportl. Foul - "
+    end if
+    if tw_foul.rg_foul.ItemIndex = 4 then
+        text = text &"5. Foul (Fouled Out)"
+        setNameText
+        tw_foul.ed_foul.Text=text
+    elseif  tw_foul.rg_foul.ItemIndex = 5 then
+        text = "2. Techn. Foul - disqualifiziert"
+        setNameText
+        tw_foul.ed_foul.Text=text
+    elseif  tw_foul.rg_foul.ItemIndex = 6 then
+        text = "2. Unsportl. Foul - disqualifiziert"
+        setNameText
+        tw_foul.ed_foul.Text=text
+    elseif  tw_foul.rg_foul.ItemIndex = 7 then
+        text = "1 Techn. + 1 Unsportl. Foul - dsq"
+         setNameText
+        tw_foul.ed_foul.Text=text
+    else
+        text = text & tw_foul.rg_foul.ItemIndex + 1 & ". Foul"
+        setNameText
+        tw_foul.ed_foul.Text=text
+    end if
+end sub
+
+sub tw_foul_cb_technischClick (Sender)
+    if tw_foul.cb_technisch.Checked=true Then
+        tw_foul.cb_unsportlich.Checked=false
+    end if
+    tw_foul_rg_foulClick (Sender)
+end sub
+
+sub tw_foul_cb_unsportlichClick (Sender)
+    if tw_foul.cb_unsportlich.Checked=true then
+        tw_foul.cb_technisch.Checked=false
+    end if
+    tw_foul_rg_foulClick (Sender)
+end sub
+
+sub tw_foul_bt_hideClick (Sender)
+dim Data : Set Data = CreateObject("Scripting.Dictionary")
+    Data.Item("NR")      =  tw_foul.ed_nr.text
+     AllTV.TV__Hide_DSS_Info(Data)
+end sub
+sub setNameText()
+    if tw_foul.rb_nametyp.ItemIndex=0 then
+        dim id : id=TSP.GetTPlayer(TSP_player_id)
+        tw_foul.ed_Name.Text = TSP.GetTPlayer(TSP_PLAYER_NAME)
+        tw_foul.ed_Name.Text = TSP_get_info_from_db("PLAYERS_1","second_name","db_id",id)                          ' Wenn mal kein Name im Dialog Fenster erscheint, dann wurde der Spieler anscheinend ohne Namen in der Databar abgespeichert.
+        tw_foul.ed_FName.Text = TSP_get_info_from_db("PLAYERS_1","first_name","db_id",id)
+        tw_foul.ed_nr.Text   = TSP.GetTPlayer(TSP_DRESS_NR)
+        tw_foul.cb_logo.Text = TSP.GetSTeam(TSP_logo)
+    elseif tw_foul.rb_nametyp.ItemIndex=1 then
+        tw_foul.ed_FName.Text=tsp.GetOfficialById(TSP.GetSTeam(TSP_coach_1_id),TSP_first_name)
+        tw_foul.ed_Name.Text = tsp.GetOfficialById(TSP.GetSTeam(TSP_coach_1_id), TSP_last_name)
+        tw_foul.cb_logo.Text = TSP.GetSTeam(TSP_LOGO)
+        tw_foul.ed_nr.Text=""
+    else
+        tw_foul.ed_FName.Text=""
+        'tw_foul.ed_name.Text=TSP.GetSTeam(TSP_SHORT_NAME)& " Bank"
+        tw_foul.ed_name.Text=TSP_get_info_from_db("TEAMS", "TV_NAME_2", "SHORT_NAME", TSP.GetSTeam(TSP_SHORT_NAME))& " Bank"
+        tw_foul.ed_nr.Text=""
+    end if
+end sub
+
+sub tw_foul_rb_nametypClick (Sender)
+     setNameText()
+end sub
+
+</script_body>
+</script>

@@ -1,0 +1,44 @@
+<script>
+<script_header>
+</script_header>
+<script_body>
+
+sub tw_startingv_vb_btn_showClick (Sender)
+    dim Data : Set Data = CreateObject("Scripting.Dictionary")
+    dim i,k
+    dim c
+    c=0
+    for i=1 to 5
+        Data.Item("NAME" & i) = tw_startingv_vb.ComponentByName("tb_name_"&i).Text
+        if Data.Item("NAME" & i) <> "" then
+            c=c+1
+        end if
+        Data.Item("FNAME" & i) = tw_startingv_vb.ComponentByName("tb_fname_"&i).Text
+        Data.Item("PHOTO" & i) = tw_startingv_vb.ComponentByName("cb_photo_"&i).Text
+        Data.Item("NR" & i) = tw_startingv_vb.ComponentByName("tb_nr_"&i).Text
+        for k=1 to 3
+            Data.Item("INFO" & i&k) = tw_startingv_vb.ComponentByName("tb_info_"&i&"_"&k).Text
+        next
+    next
+    Data.Item("COUNT")=c
+    Data.Item("LOGO")      = tw_startingv_vb.cb_logo.Text
+    Data.Item("HL")      = tw_startingv_vb.tb_hl.text
+    
+    Data.Item("WERBUNG") =   tw_startingv_vb.cb_werbung.Checked
+
+
+    AllTV.TV__VB_Starting_Five Data
+    set Data = Nothing
+
+end sub
+
+sub tw_startingv_vb_cb_logoChange (Sender)
+    dim subdir
+    subdir= tw_startingv_vb.cb_logo.Text
+
+     AllTV.get_player_photos_big(subdir)
+
+end sub
+
+</script_body>
+</script>

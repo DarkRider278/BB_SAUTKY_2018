@@ -1,0 +1,60 @@
+<script>
+<script_header>
+</script_header>
+<script_body>
+
+sub tw_info2_bt_showClick (Sender)
+dim Data : Set Data = CreateObject("Scripting.Dictionary")
+    if sender.down then
+        Data.Item("NAME")      =  ""'tw_dss_info.ed_Name.text
+        Data.Item("NR")      =  ""'tw_dss_info.ed_nr.text
+        Data.Item("INFO")      =  tw_info2.ed_info.text
+        Data.Item("LOGO")      =  ""
+        AllTV.TV__DSS_Info_Show(Data)
+     else
+        Data.Item("NR")      =  tw_dss_info.ed_nr.text
+        AllTV.TV__DSS_Info_Hide(Data)
+     end if
+end sub
+
+sub tw_info2_DataBar1BeforeDataDelete (Sender, ComboText)
+    if tw_info2.lb_list.Items.IndexOf(ComboText) <> -1 then
+        tw_info2.lb_list.Items.Delete(tw_info2.lb_list.Items.IndexOf(ComboText))
+    end if
+end sub
+
+sub tw_info2_DataBar1BeforeDataSave (Sender, ComboText)
+    if tw_info2.lb_list.Items.IndexOf(ComboText) = -1 then
+        tw_info2.lb_list.Items.add ComboText
+    end if
+end sub
+
+sub tw_info2_DataBar1RefreshClick (Sender)
+    dim i
+    tw_info2.lb_list.Items.Clear
+    for i = 0 to tw_info2.DataBar1.DataItemCount-1
+        tw_info2.lb_list.Items.Add tw_info2.DataBar1.DataItems(i)
+    next
+end sub
+
+sub tw_info2_lb_listClick (Sender)
+    if Sender.ItemIndex <> -1 then
+        tw_info2.DataBar1.LoadData tw_info2.lb_list.Items.Strings(Sender.itemindex)
+    end if
+end sub
+
+sub tw_info2_lb_listDblClick (Sender)
+    'call tw_info2_lb_listClick (Sender)
+    'if tw_info2.bt_show.down=false then
+    '    tw_info2.bt_show.down=true
+    '    call tw_info2_bt_showClick (tw_info2.bt_show)
+    'end if
+end sub
+
+sub tw_info2_btn_saveClick (Sender)
+    tw_info2.DataBar1.SaveData tw_info2.ed_info.text
+    tw_info2_DataBar1RefreshClick(Sender)
+end sub
+
+</script_body>
+</script>

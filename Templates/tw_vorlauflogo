@@ -1,0 +1,316 @@
+object tw_vorlauflogo: TccToolWindow
+  Tag = 3
+  FloatingBorderStyle = bsNone
+  Caption = 'Vorlauflogo'
+  Color = 3289650
+  ClientAreaHeight = 259
+  ClientAreaWidth = 357
+  DockableTo = []
+  DockRow = 1
+  LastDock = frmMain.dckTop
+  Resizable = False
+  TabOrder = 0
+  Visible = False
+  Floating = True
+  ParentColor = False
+  Float = True
+  SavedAtRunTime = True
+  object lbl_vs1: TptLabel
+    Left = 170
+    Top = 61
+    Width = 21
+    Height = 20
+    Caption = 'vs.'
+    Font.Charset = ANSI_CHARSET
+    Font.Color = clWhite
+    Font.Height = -15
+    Font.Name = 'Trebuchet MS'
+    Font.Style = [fsBold]
+    ParentFont = False
+    Locked = False
+  end
+  object lbl_score: TptLabel
+    Left = 125
+    Top = 155
+    Width = 28
+    Height = 13
+    Caption = 'Score'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWhite
+    Font.Height = -11
+    Font.Name = 'MS Sans Serif'
+    Font.Style = []
+    ParentFont = False
+    Locked = False
+  end
+  object lbl_hour: TptLabel
+    Left = 245
+    Top = 155
+    Width = 23
+    Height = 13
+    Caption = 'Hour'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWhite
+    Font.Height = -11
+    Font.Name = 'MS Sans Serif'
+    Font.Style = []
+    ParentFont = False
+    Visible = False
+    Locked = False
+  end
+  object lbl_min: TptLabel
+    Left = 300
+    Top = 155
+    Width = 32
+    Height = 13
+    Caption = 'Minute'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWhite
+    Font.Height = -11
+    Font.Name = 'MS Sans Serif'
+    Font.Style = []
+    ParentFont = False
+    Visible = False
+    Locked = False
+  end
+  object Panel1: TptPanel
+    Left = 0
+    Top = 220
+    Width = 357
+    Height = 39
+    Align = alBottom
+    BevelOuter = bvNone
+    Color = 1772219
+    Locked = False
+    TabOrder = 0
+    object bt_show: TptButton
+      Left = 125
+      Top = 6
+      Width = 93
+      Height = 26
+      Caption = 'Show'
+      Font.Charset = ANSI_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'Trebuchet MS'
+      Font.Style = [fsBold]
+      ModalResult = mrNone
+      ParentFont = False
+      TabOrder = 0
+      ParentColor = False
+      Color = clBtnFace
+      ColorMouseOver = clBtnFace
+      ColorFocused = clBtnFace
+      DrawFocusRect = False
+      MultiLineCaption = False
+      Alignment = alMiddleCenter
+      FontFocused.Charset = ANSI_CHARSET
+      FontFocused.Color = clMaroon
+      FontFocused.Height = -13
+      FontFocused.Name = 'Trebuchet MS'
+      FontFocused.Style = [fsBold]
+      FontMouseOver.Charset = ANSI_CHARSET
+      FontMouseOver.Color = clMaroon
+      FontMouseOver.Height = -13
+      FontMouseOver.Name = 'Trebuchet MS'
+      FontMouseOver.Style = [fsBold]
+      PreferFocused = False
+      FrameSize = 1
+      BackgroundTransparent = False
+      BackgroundStretch = True
+      BackgroundTransparentColor = clBlack
+      Down = False
+      DrawFocusBorder = True
+      Checkable = True
+      RightPressDown = False
+      StoreBackground = True
+      Hotkey.Shift = []
+      Hotkey.IsLong = False
+      Hotkey.Enabled = True
+      Locked = False
+      EventDataNames = 'OnClick=tw_vorlauflogo_bt_showClick'
+    end
+  end
+  object DataBar1: TptDataBar
+    Left = 0
+    Top = 0
+    Width = 357
+    Height = 35
+    Align = alTop
+    Color = 13816530
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -13
+    Font.Name = 'Arial'
+    Font.Style = [fsBold]
+    ParentFont = False
+    TabOrder = 1
+    DataGroupName = 'tw_vorlauflogo'
+    DataGroupStyle = dsLocal
+    DataComboBoxWidth = 180
+    ButtonStyle = bsImageOnly
+    BorderWidth = 4
+    VisibleDataCbx = True
+    VisibleSaveBtn = True
+    VisibleRefreshBtn = True
+    VisibleDeleteBtn = True
+    VisibleNextBtn = False
+    VisiblePreviousBtn = False
+    DataVisibility = kfNone
+    Locked = False
+  end
+  object rg_typ: TptRadioGroup
+    Left = 10
+    Top = 90
+    Width = 341
+    Height = 56
+    Caption = 'Typ'
+    Columns = 3
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWhite
+    Font.Height = -11
+    Font.Name = 'MS Sans Serif'
+    Font.Style = []
+    ItemIndex = 1
+    Items.WideStrings = (
+      'Clean'
+      'Score'
+      'Time')
+    ParentFont = False
+    TabOrder = 2
+    Data = '1'
+    Locked = False
+    ExtendedFocusing = True
+    EventDataNames = 'OnClick=tw_vorlauflogo_rg_typClick'
+  end
+  object cb_name1: TptComboBox
+    Left = 20
+    Top = 60
+    Width = 145
+    Height = 21
+    Style = csDropDownList
+    Sorted = True
+    TabOrder = 3
+    Text = 'Oberwart Gunners'
+    Items.WideStrings = (
+      'Arkadia Traiskirchen Lions'
+      'BC Hallmann Vienna'
+      'ece bulls Kapfenberg'
+      'Klosterneuburg Dukes'
+      'Oberwart Gunners'
+      'Raiffeisen Flyers Wels'
+      'Raiffeisen Fürstenfeld Panthers'
+      'Swans Gmunden'
+      'UBSC Raiffeisen Graz')
+    Items.WideStrings_UTF7 = (
+      'Arkadia Traiskirchen Lions'
+      'BC Hallmann Vienna'
+      'ece bulls Kapfenberg'
+      'Klosterneuburg Dukes'
+      'Oberwart Gunners'
+      'Raiffeisen Flyers Wels'
+      'Raiffeisen F+APw-rstenfeld Panthers'
+      'Swans Gmunden'
+      'UBSC Raiffeisen Graz')
+    ItemIndex = 4
+    DroppedWidth = 145
+    DropDownAutoSize = False
+    FixedStyle = True
+    SaveStyle = cbssStandard
+    Locked = False
+    EventDataNames = 'OnKeyPress=tv_programm_cb_name1KeyPress'
+  end
+  object cb_name2: TptComboBox
+    Left = 199
+    Top = 60
+    Width = 145
+    Height = 21
+    Style = csDropDownList
+    Sorted = True
+    TabOrder = 4
+    Text = 'Raiffeisen Flyers Wels'
+    Items.WideStrings = (
+      'Arkadia Traiskirchen Lions'
+      'BC Hallmann Vienna'
+      'ece bulls Kapfenberg'
+      'Klosterneuburg Dukes'
+      'Oberwart Gunners'
+      'Raiffeisen Flyers Wels'
+      'Raiffeisen Fürstenfeld Panthers'
+      'Swans Gmunden'
+      'UBSC Raiffeisen Graz')
+    Items.WideStrings_UTF7 = (
+      'Arkadia Traiskirchen Lions'
+      'BC Hallmann Vienna'
+      'ece bulls Kapfenberg'
+      'Klosterneuburg Dukes'
+      'Oberwart Gunners'
+      'Raiffeisen Flyers Wels'
+      'Raiffeisen F+APw-rstenfeld Panthers'
+      'Swans Gmunden'
+      'UBSC Raiffeisen Graz')
+    ItemIndex = 5
+    DroppedWidth = 145
+    DropDownAutoSize = False
+    FixedStyle = True
+    SaveStyle = cbssStandard
+    Locked = False
+    EventDataNames = 'OnKeyPress=tv_programm_cb_name1KeyPress'
+  end
+  object ed_score: TptEdit
+    Left = 125
+    Top = 175
+    Width = 76
+    Height = 21
+    MaxLength = 0
+    TabOrder = 5
+    Numeric = False
+    InputType = itAnything
+    Locked = False
+  end
+  object ed_hour: TptEdit
+    Left = 245
+    Top = 175
+    Width = 46
+    Height = 21
+    MaxLength = 0
+    TabOrder = 6
+    Text = '16'
+    Visible = False
+    Numeric = False
+    InputType = itAnything
+    Locked = False
+  end
+  object ed_min: TptEdit
+    Left = 300
+    Top = 175
+    Width = 46
+    Height = 21
+    MaxLength = 0
+    TabOrder = 7
+    Text = '5'
+    Visible = False
+    Numeric = False
+    InputType = itAnything
+    Locked = False
+  end
+  object cb_left: TptCheckBox
+    Left = 15
+    Top = 175
+    Width = 97
+    Height = 17
+    Caption = 'Links?'
+    Color = 3289650
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWhite
+    Font.Height = -11
+    Font.Name = 'MS Sans Serif'
+    Font.Style = []
+    ParentColor = False
+    ParentFont = False
+    TabOrder = 8
+    Locked = False
+    ColorFocused = 3289650
+    ColorMouseOver = 3289650
+  end
+end

@@ -1,0 +1,19 @@
+<script>
+<script_header>
+</script_header>
+<script_body>
+
+sub tw_quoten_bt_showClick (Sender)
+    Dim Data : Set Data = CreateObject("Scripting.Dictionary")
+    Data.Item("NAME_A1") = tw_quoten.ed_teamA_1.Text
+    Data.Item("NAME_A2") = tw_quoten.ed_teamA_2.Text
+    Data.Item("NAME_B1") = tw_quoten.ed_teamB_1.Text
+    Data.Item("NAME_B2") = tw_quoten.ed_teamB_2.Text
+    Data.Item("QUOTE1")  = tw_quoten.ed_quote1.Text
+    Data.Item("QUOTE2")  = tw_quoten.ed_quote2.Text
+    AllTV.TV__Quoten Data
+    set Data = Nothing
+end sub
+
+</script_body>
+</script>

@@ -1,0 +1,32 @@
+<script>
+<script_header>
+</script_header>
+<script_body>
+
+sub tw_zwischenstand_free_bt_show_ergClick (Sender)
+    dim i
+    dim Data : set Data = CreateObject("Scripting.Dictionary")
+    for i = 1 to 5
+        if tw_zwischenstand_free.ComponentByName("edt_text_"&i).Text <> "" then
+            Data.Item("SCOREA" & i) = tw_zwischenstand_free.ComponentByName("edt_score_"&i).Text
+            Data.Item("SCOREB" & i) = tw_zwischenstand_free.ComponentByName("edt_scoreb_"&i).Text
+            Data.Item("TEXT"  & i) = tw_zwischenstand_free.ComponentByName("edt_text_"&i).Text
+            Data.Item("ITEMCOUNT") = i
+        end if
+    next
+
+    Data.Item("ALL_SCORE") = tw_zwischenstand_free.edt_score.Text
+    Data.Item("NAME_A")    = tw_zwischenstand_free.cb_name1.Text
+    Data.Item("NAME_B")    = tw_zwischenstand_free.cb_name2.Text
+    Data.Item("LOGO_A")    = tw_zwischenstand_free.cb_logo1.Text
+    Data.Item("LOGO_B")    = tw_zwischenstand_free.cb_logo2.Text
+    if Data.Item("ITEMCOUNT")=1 then
+    Data.Item("PERIOD")    =  tw_zwischenstand_free.ComponentByName("edt_text_1").Text
+    end if
+
+    AllTV.TV__BB_ZwischenStand Data
+    set Data = Nothing
+end sub
+
+</script_body>
+</script>

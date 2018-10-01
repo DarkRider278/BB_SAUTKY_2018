@@ -1,0 +1,164 @@
+<script>
+<script_header>
+</script_header>
+<script_body>
+dim PLAYER_STATS_SEASON : set PLAYER_STATS_SEASON = CreateObject("Scripting.Dictionary")
+PLAYER_STATS_SEASON.item("Fouls")           = "FOULS"
+PLAYER_STATS_SEASON.item("Tore")            = "GOALS"
+PLAYER_STATS_SEASON.item("Gelbe Karten")    = "YC"
+PLAYER_STATS_SEASON.item("Platzverweise")   = "RC"
+PLAYER_STATS_SEASON.item("Minuten gespielt")= "MINUTES_PLAYED"
+PLAYER_STATS_SEASON.item("Schüsse")      = "TOTAL_SHOTS"
+PLAYER_STATS_SEASON.item("Torschüsse auf Tor") = "SHOTS_AT_TARGET"
+'PLAYER_STATS_SEASON.item("Elfmeter Tore")   = "PENALTY_GOALS"
+'PLAYER_STATS_SEASON.item("Abseits")         = "OFFSIDE"
+'PLAYER_STATS_SEASON.item("Gewonnene Ecken") = "WON_CORNERS"
+PLAYER_STATS_SEASON.item("Ballkontakte")    = "TOUCHES"
+PLAYER_STATS_SEASON.item("Spiele")          = "PLAYED_GAMES"
+PLAYER_STATS_SEASON.item("Assists")          = "ASSISTS"
+
+dim PLAYER_STATS_MATCH : set PLAYER_STATS_MATCH = CreateObject("Scripting.Dictionary")
+PLAYER_STATS_MATCH.item("Fouls")           = "FOULS"
+PLAYER_STATS_MATCH.item("Tore")            = "GOALS"
+PLAYER_STATS_MATCH.item("Gelbe Karten")    = "YC"
+PLAYER_STATS_MATCH.item("Platzverweise")   = "RC"
+PLAYER_STATS_MATCH.item("Minuten gespielt")= "MINUTES"
+PLAYER_STATS_MATCH.item("Schüsse")         = "ATTACS"
+PLAYER_STATS_MATCH.item("Torschüsse auf Tor") = "SHOTS_AT_GOAL"
+'PLAYER_STATS_MATCH.item("Elfmeter Tore")   = "PENALTIES"
+'PLAYER_STATS_MATCH.item("Abseits")         = "OFFSIDE"
+'PLAYER_STATS_MATCH.item("Eckbälle")        = "CORNERS"
+PLAYER_STATS_MATCH.item("Ballkontakte")    = "TOUCHES"
+PLAYER_STATS_MATCH.item("Assists")          = "ASSISTS"
+
+PLAYER_STATS_MATCH.item("Gew. Zweikämpfe (%)") = "DUELS_WON"
+PLAYER_STATS_MATCH.item("Passgenauigkeit (%)") = "ACCURACY"
+
+
+sub tw_player_compare_rg_statsTypeClick (Sender)
+    dim param, i
+    
+    tw_player_compare.cb_name1.Items.CommaText = ALL_PLAYERS
+    tw_player_compare.cb_name2.Items.CommaText = ALL_PLAYERS
+
+    tw_player_compare.cb_name1.UserData = tw_player_compare.cb_name1.text
+    tw_player_compare.cb_name2.UserData = tw_player_compare.cb_name2.text
+
+
+    tw_player_compare.cb_name1.ItemIndex = tw_player_compare.cb_name1.Items.IndexOf(tw_player_compare.cb_name1.UserData)
+    tw_player_compare.cb_name2.ItemIndex = tw_player_compare.cb_name2.Items.IndexOf(tw_player_compare.cb_name2.UserData)
+
+
+    tw_PLAYER_COMPARE_REFRESH_DATA Sender
+end sub
+
+
+' ALLE DATEN DES DIALOGS AKTUALISIEREN
+sub tw_PLAYER_COMPARE_REFRESH_DATA (Sender)
+    dim i, param, db_param, sql, db_id_A, db_id_B
+
+    db_id_A = ""
+    db_id_B = ""
+    on error resume next
+    db_id_A = trim(split(tw_player_compare.cb_name1.Text, "(")(1))
+    db_id_B = trim(split(tw_player_compare.cb_name2.Text, "(")(1))
+    on error goto 0
+    if (db_id_A = "") or (db_id_B = "") then exit sub
+
+    ' Brauchen wir Season oder Match Statistiken?
+
+
+
+end sub
+
+sub tw_player_compare_bt_show_ergClick (Sender)    dim Data : set Data = CreateObject("Scripting.Dictionary")
+    dim k,i, pID, tID
+
+    pID = ""
+
+    on error resume next
+    pID = split(tw_player_compare.cb_name1.Text, "(")(1)
+    on error goto 0
+    Data.Item("FOTO") =tw_player_compare.cb_foto.Checked
+    Data.Item("NAME1") = tw_player_compare.cb_name1.Text
+    Data.Item("LOGO1") = tw_player_compare.cb_logo1.Text ' LOGO VON COMBOBOX
+
+
+    Data.Item("FOTO1") = tw_player_compare.cb_foto1.Text
+
+    pID = ""
+    on error resume next
+    pID = split(tw_player_compare.cb_name2.Text, "(")(1)
+    on error goto 0
+    Data.Item("NAME2") = tw_player_compare.cb_name2.Text
+    Data.Item("LOGO2") = tw_player_compare.cb_logo2.Text ' LOGO VON COMBOBOX
+    Data.Item("FOTO2") = tw_player_compare.cb_foto2.Text
+
+    k = 0
+    for i = 1 to tw_player_compare.Grid1.RowCount - 1
+        if Trim(tw_player_compare.Grid1.Cells(i,3)) <> "" then
+            if Trim(tw_player_compare.Grid1.Cells(i,1)) <> "" then
+                k = k + 1
+                Data.Item("PARAM_A" & k) = tw_player_compare.Grid1.Cells(i,2)
+                Data.Item("PARAM_B" & k) = tw_player_compare.Grid1.Cells(i,4)
+                Data.Item("TEXT"    & k) = tw_player_compare.Grid1.Cells(i,3)    ' Hmm lieber SprachDB?
+            end if
+        end if
+    next
+    if k = 0 then exit sub
+    Data.Item("ITEMCOUNT")  = k
+    Data.Item("TITLE")      = tw_player_compare.ed_title.Text
+    'Data.Item("BACKGROUND") = pg_table.cb_background.Checked
+
+
+    AllTV.TV__VB_PlayerStatCompare Data
+    set Data = Nothing
+end sub
+
+sub tw_player_compare_bt_clearClick (Sender)
+    tw_player_compare.Grid1.Clear(False)
+    dim i
+    for i = 1 to 8
+        tw_player_compare.ComponentByName("cb_param" & i).Text = ""
+    next
+end sub
+
+sub tw_player_compare_cb_name1Change (Sender)
+    tw_PLAYER_COMPARE_REFRESH_DATA Sender
+    if (Sender.UserData = True) then exit sub
+    dim i,k
+    if len(Sender.Text) < 1 then exit sub
+    for i = 0 to Sender.Items.Count - 1
+        if UCase(Sender.text) = UCase(left(sender.Items.Strings(i), len(Sender.Text))) then
+            k = len(Sender.Text)
+            Sender.Text      = sender.Items.Strings(i)
+            Sender.SelStart  = k
+            Sender.SelLength = len(Sender.Text) - k
+            exit for
+        end if
+    next
+end sub
+
+sub tw_player_compare_cb_logo1Change (Sender)
+       dim subdir
+    subdir= Sender.Text
+
+     'AllTV.get_player_photos_vgl subdir,1
+end sub
+
+sub tw_player_compare_cb_logo2Change (Sender)
+     dim subdir
+    subdir= Sender.Text
+
+     'AllTV.get_player_photos_vgl subdir,2
+end sub
+
+sub tw_player_compare_Close (Sender)
+  ' script tw_player_compare_Close generated on 02/05/2017 at 16:44:51
+  ' description of params:
+  ' Sender as IccToolWindow
+
+end sub
+
+</script_body>
+</script>
