@@ -1467,13 +1467,13 @@ end sub
             ids =1100
             if Data.Item("ANIM_TYPE") = 2 or Data.Item("ANIM_TYPE") = 4 then
                 for i = 1 to 11
-                    if     (i < 3) then  ' Grunddurchgang -> Die ersten 6 werden H1
+                    if     (i < 9) then  ' Grunddurchgang -> Die ersten 6 werden H1
                         'buffer = buffer & "1  SCENE*" & s__VizPath & "/" & sScene & "*TREE*$" & sCont & "$obj_Hgd_Rang*MATERIAL*EMISSION SET " & 90/255 & " " & 4 / 255 & " " & 16 / 255 & vbNullChar
                         SetVizData ids+8 ,1
-                    elseif i<7 then
-                        SetVizData ids+8 ,3
-                    elseif i<8 then
-                        SetVizData ids+8 ,0
+                    'elseif i<7 then
+                    '    SetVizData ids+8 ,3
+                    'elseif i<8 then
+                    '    SetVizData ids+8 ,0
                     else
                         'buffer = buffer & "1  SCENE*" & s__VizPath & "/" & sScene & "*TREE*$" & sCont & "$obj_Hgd_Rang*MATERIAL*EMISSION SET " & 72/255 & " " & 72 / 255 & " " & 72 / 255 & vbNullChar
                         SetVizData ids+8 ,5
