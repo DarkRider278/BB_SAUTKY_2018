@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<Settings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <WebStats>http://www.fibalivestats.com/u/OEBL/931390/st.html</WebStats>
+  <WebLeader>http://www.fibalivestats.com/u/OEBL/931390/lds.html</WebLeader>
+  <WebStatId>
+    <string>FieldGoalsMade</string>
+    <string>TwoPointersMade</string>
+    <string>ThreePointersMade</string>
+    <string>FreeThrowsMade</string>
+    <string>ReboundsTotal</string>
+    <string>Assists</string>
+    <string>Steals</string>
+    <string>Blocks</string>
+    <string>Turnovers</string>
+    <string>FoulsPersonal</string>
+    <string>PointsInThePaint</string>
+    <string>PointsSecondChance</string>
+    <string>PointsFromTurnovers</string>
+    <string>BenchPoints</string>
+  </WebStatId>
+  <StatName>
+    <string>FG</string>
+    <string>2P</string>
+    <string>3P</string>
+    <string>FT</string>
+    <string>Rebounds (Off/Def)</string>
+    <string>Assists</string>
+    <string>Steals</string>
+    <string>Blocks</string>
+    <string>Turnovers</string>
+    <string>Fouls</string>
+    <string>Points/Paint</string>
+    <string>2nd Chance Points</string>
+    <string>Points/Turnovers</string>
+    <string>Bench Points</string>
+  </StatName>
+  <WebLeaderId>
+    <string>Points</string>
+    <string>ReboundsTotal</string>
+    <string>Assists</string>
+    <string>Blocks</string>
+  </WebLeaderId>
+  <LeaderName>
+    <string>Points</string>
+    <string>Rebounds</string>
+    <string>Assists</string>
+    <string>Blocks</string>
+  </LeaderName>
+</Settings>

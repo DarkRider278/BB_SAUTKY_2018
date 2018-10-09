@@ -1,0 +1,5 @@
+1.=D._White;5;18;M._Car;7;21,
+2.=E._Murati;4;18;M._Spaleta;15;17,
+3.=C._Murray;3;17;E._Sürums;10;7,
+4.=T._Klette;14;11;R._Reinelt;11;5,
+5.=T._Brummitt;17;10;I._Alisic;6;3,

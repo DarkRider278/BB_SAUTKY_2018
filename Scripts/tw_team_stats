@@ -104,10 +104,34 @@ end sub
 
 sub tw_team_stats2_bt_clearClick (Sender)
     tw_team_stats.Grid1.Clear(false)
+    tw_team_stats.Grid1.Cells(1,4)= tw_team_stats.cb_stat_21.text
+    tw_team_stats.Grid1.Cells(2,4)= tw_team_stats.cb_stat_22.text
+    tw_team_stats.Grid1.Cells(3,4)= tw_team_stats.cb_stat_23.text
+    tw_team_stats.Grid1.Cells(4,4)= tw_team_stats.cb_stat_24.text
+    tw_team_stats.Grid1.Cells(5,4)= tw_team_stats.cb_stat_25.text
+    tw_team_stats.Grid1.Cells(6,4)= tw_team_stats.cb_stat_26.text
+    tw_team_stats.Grid1.Cells(7,4)= tw_team_stats.cb_stat_27.text
+    tw_team_stats.Grid1.Cells(8,4)= tw_team_stats.cb_stat_28.text
+    tw_team_stats.Grid1.Cells(9,4)= tw_team_stats.cb_stat_29.text
+    tw_team_stats.Grid1.Cells(10,4)= tw_team_stats.cb_stat_10.text
+    tw_team_stats.Grid1.Cells(11,4)= tw_team_stats.cb_stat_11.text
+    tw_team_stats.Grid1.Cells(12,4)= tw_team_stats.cb_stat_12.text
 end sub
 
 sub tw_team_stats_bt_clearClick (Sender)
     tw_team_stats.Grid1.Clear(false)
+    tw_team_stats.Grid1.Cells(1,4)= tw_team_stats.cb_stat_21.text
+    tw_team_stats.Grid1.Cells(2,4)= tw_team_stats.cb_stat_22.text
+    tw_team_stats.Grid1.Cells(3,4)= tw_team_stats.cb_stat_23.text
+    tw_team_stats.Grid1.Cells(4,4)= tw_team_stats.cb_stat_24.text
+    tw_team_stats.Grid1.Cells(5,4)= tw_team_stats.cb_stat_25.text
+    tw_team_stats.Grid1.Cells(6,4)= tw_team_stats.cb_stat_26.text
+    tw_team_stats.Grid1.Cells(7,4)= tw_team_stats.cb_stat_27.text
+    tw_team_stats.Grid1.Cells(8,4)= tw_team_stats.cb_stat_28.text
+    tw_team_stats.Grid1.Cells(9,4)= tw_team_stats.cb_stat_29.text
+    tw_team_stats.Grid1.Cells(10,4)= tw_team_stats.cb_stat_10.text
+    tw_team_stats.Grid1.Cells(11,4)= tw_team_stats.cb_stat_11.text
+    tw_team_stats.Grid1.Cells(12,4)= tw_team_stats.cb_stat_12.text
 end sub
 
 sub tw_team_stats_bt_clear1Click (Sender)
@@ -147,9 +171,9 @@ sub tw_team_stats_cb_stat_1Change (Sender)
 end sub
 
 sub tw_team_stats_Grid1Click (Sender)
-dim t1
-dim t2
-dim n
+    dim t1
+    dim t2
+    dim n
     n= Sender.Cells(Sender.Row, 4)
     n=Replace(n," (Off/Def)","")
     t1 = TSP_get_info_from_db("TEAMS", "NICK_NAME", "TV_NAME", tw_team_stats.cb_name1.Text)
@@ -170,6 +194,68 @@ sub tw_team_stats_Grid1MouseUp (Sender, Button, Shift, X, Y)
      tw_team_stats.cb_stat_10.text= tw_team_stats.Grid1.Cells(10,4)
      tw_team_stats.cb_stat_11.text= tw_team_stats.Grid1.Cells(11,4)
      tw_team_stats.cb_stat_12.text= tw_team_stats.Grid1.Cells(12,4)
+end sub
+
+sub tw_team_stats_bt_importClick (Sender)
+    dim data,stat,values ,i
+    data=cc.Strings.LoadFromFile("d:\BBSTAT.txt",false)
+    if data<> "" then
+        cc.Strings.StringsObj.Clear
+        cc.Strings.StringsObj.CommaText=data
+        for i = 1 to tw_team_stats.Grid1.RowCount - 1
+            stat = Trim(tw_team_stats.Grid1.Cells(i,4))
+            stat=Replace(stat," ","_")
+            values=cc.Strings.StringsObj.Values(stat)
+            if instr(values,";")>0 then
+                tw_team_stats.Grid1.Cells(i,3)=split(values,";")(0)
+                tw_team_stats.Grid1.Cells(i,5)=split(values,";")(1)
+            else
+                tw_team_stats.Grid1.Cells(i,3)=0
+                tw_team_stats.Grid1.Cells(i,5)=0
+            end if
+            if instr(tw_team_stats.Grid1.Cells(i,3), "/") then
+                dim tmp
+                tmp = split(tw_team_stats.Grid1.Cells(i,3), "/")
+                if UBound(tmp) = 1 then
+                    if isNumeric(tmp(0)) and IsNumeric(tmp(1)) then
+                        dim a : a = cInt(tmp(0))
+                        dim b : b = cInt(tmp(1))
+                        if b <> 0 then
+                            tw_team_stats.Grid1.Cells(i,2) = cInt(100 * (a/b)) & "%"
+                        else
+                            tw_team_stats.Grid1.Cells(i,2) = ""
+                        end if
+                    else
+                        tw_team_stats.Grid1.Cells(i,2) = ""
+                    end if
+                else
+                    tw_team_stats.Grid1.Cells(i,2) = ""
+                end if
+            else
+                'Sender.Cells(Sender.row, target) = ""
+            end if
+            if instr(tw_team_stats.Grid1.Cells(i,5), "/") then
+                tmp = split(tw_team_stats.Grid1.Cells(i,5), "/")
+                if UBound(tmp) = 1 then
+                    if isNumeric(tmp(0)) and IsNumeric(tmp(1)) then
+                       a = cInt(tmp(0))
+                       b = cInt(tmp(1))
+                        if b <> 0 then
+                            tw_team_stats.Grid1.Cells(i,6) = cInt(100 * (a/b)) & "%"
+                        else
+                            tw_team_stats.Grid1.Cells(i,6) = ""
+                        end if
+                    else
+                        tw_team_stats.Grid1.Cells(i,6) = ""
+                    end if
+                else
+                    tw_team_stats.Grid1.Cells(i,6) = ""
+                end if
+'            else
+'                'Sender.Cells(Sender.row, target) = ""
+            end if
+        next
+    end if
 end sub
 
 </script_body>

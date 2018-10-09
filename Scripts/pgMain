@@ -375,80 +375,80 @@ sub pgMain_bt_card1Click (Sender)
     next
 
     ' Get the top-3 scorers for each team
-    dim dress(6), pts(6), p, i
-    TSP.SaveSelection
-    tsp.SetTeamPos TSP_A
-    TSP.SetPlayerPos TSP_First, TSP_ALL, TSP_Actual
-    do
-        p = TSP.GetDPlayer(TSP_3)
-        if p > pts(0) then
-            pts(2)   = pts(1)
-            pts(1)   = pts(0)
-            pts(0)   = p
-            dress(2) = dress(1)
-            dress(1) = dress(0)
-            dress(0) = TSP.GetSPlayer(TSP_DRESS_NR)
-        elseif p > pts(1) then
-            pts(2)   = pts(1)
-            pts(1)   = p
-            dress(2) = dress(1)
-            dress(1) = TSP.GetSPlayer(TSP_DRESS_NR)
-        elseif p > pts(2) then
-            pts(2)   = p
-            dress(2) = TSP.GetSPlayer(TSP_DRESS_NR)
-        end if
-    loop while TSP.SetPlayerPos(TSP_Next, TSP_ALL, TSP_Actual)
-    
-    for i = 0 to 6
-        if pts(i) > 0 then
-            tw_topscorer.ComponentByName("ed_pts"  & 2*i+1).Text = pts(i)
-            tw_topscorer.ComponentByName("ed_rank" & 2*i+1).Text = ""  ' TODO <--- HIER KANN NOCH WAS REIN.... nur was
-            tw_topscorer.ComponentByName("cb_name" & 2*i+1).Text = tsp.GetPlayerByNR(TSP_HPlayer, dress(i), TSP_Actual, "FIRST_NAME") & " " & tsp.GetPlayerByNR(TSP_HPlayer, dress(i), TSP_Actual, "SECOND_NAME")
-        else
-            tw_topscorer.ComponentByName("ed_pts"  & 2*i+1).Text = ""
-            tw_topscorer.ComponentByName("ed_rank" & 2*i+1).Text = ""
-            tw_topscorer.ComponentByName("cb_name" & 2*i+1).Text = ""
-        end if
-    next
-
-    Erase pts
-    Erase dress
-
-    tsp.SetTeamPos TSP_B
-    TSP.SetPlayerPos TSP_First, TSP_ALL, TSP_Actual
-    do
-        p = TSP.GetDPlayer(TSP_3)
-        if p > pts(0) then
-            pts(2)   = pts(1)
-            pts(1)   = pts(0)
-            pts(0)   = p
-            dress(2) = dress(1)
-            dress(1) = dress(0)
-            dress(0) = TSP.GetSPlayer(TSP_DRESS_NR)
-        elseif p > pts(1) then
-            pts(2)   = pts(1)
-            pts(1)   = p
-            dress(2) = dress(1)
-            dress(1) = TSP.GetSPlayer(TSP_DRESS_NR)
-        elseif p > pts(2) then
-            pts(2)   = p
-            dress(2) = TSP.GetSPlayer(TSP_DRESS_NR)
-        end if
-    loop while TSP.SetPlayerPos(TSP_Next, TSP_ALL, TSP_Actual)
-
-    for i = 0 to 6
-        if pts(i) > 0 then
-            tw_topscorer.ComponentByName("ed_pts"  & 2*i+2).Text = pts(i)
-            tw_topscorer.ComponentByName("ed_rank" & 2*i+2).Text = ""  ' TODO <--- HIER KANN NOCH WAS REIN.... nur was
-            tw_topscorer.ComponentByName("cb_name" & 2*i+2).Text = tsp.GetPlayerByNR(TSP_HPlayer, dress(i), TSP_Actual, "FIRST_NAME") & " " & tsp.GetPlayerByNR(TSP_HPlayer, dress(i), TSP_Actual, "SECOND_NAME")
-        else
-            tw_topscorer.ComponentByName("ed_pts"  & 2*i+2).Text = ""
-            tw_topscorer.ComponentByName("ed_rank" & 2*i+2).Text = ""
-            tw_topscorer.ComponentByName("cb_name" & 2*i+2).Text = ""
-        end if
-    next
-
-    TSP.RestoreSelection
+    'dim dress(6), pts(6), p, i
+'    TSP.SaveSelection
+'    tsp.SetTeamPos TSP_A
+'    TSP.SetPlayerPos TSP_First, TSP_ALL, TSP_Actual
+'    do
+'        p = TSP.GetDPlayer(TSP_3)
+'        if p > pts(0) then
+'            pts(2)   = pts(1)
+'            pts(1)   = pts(0)
+'            pts(0)   = p
+'            dress(2) = dress(1)
+'            dress(1) = dress(0)
+'            dress(0) = TSP.GetSPlayer(TSP_DRESS_NR)
+'        elseif p > pts(1) then
+'            pts(2)   = pts(1)
+'            pts(1)   = p
+'            dress(2) = dress(1)
+'            dress(1) = TSP.GetSPlayer(TSP_DRESS_NR)
+'        elseif p > pts(2) then
+'            pts(2)   = p
+'            dress(2) = TSP.GetSPlayer(TSP_DRESS_NR)
+'        end if
+'    loop while TSP.SetPlayerPos(TSP_Next, TSP_ALL, TSP_Actual)
+'
+'    for i = 0 to 6
+'        if pts(i) > 0 then
+'            tw_topscorer.ComponentByName("ed_pts"  & 2*i+1).Text = pts(i)
+'            tw_topscorer.ComponentByName("ed_rank" & 2*i+1).Text = ""  ' TODO <--- HIER KANN NOCH WAS REIN.... nur was
+'            tw_topscorer.ComponentByName("cb_name" & 2*i+1).Text = tsp.GetPlayerByNR(TSP_HPlayer, dress(i), TSP_Actual, "FIRST_NAME") & " " & tsp.GetPlayerByNR(TSP_HPlayer, dress(i), TSP_Actual, "SECOND_NAME")
+'        else
+'            tw_topscorer.ComponentByName("ed_pts"  & 2*i+1).Text = ""
+'            tw_topscorer.ComponentByName("ed_rank" & 2*i+1).Text = ""
+'            tw_topscorer.ComponentByName("cb_name" & 2*i+1).Text = ""
+'        end if
+'    next
+'
+'    Erase pts
+'    Erase dress
+'
+'    tsp.SetTeamPos TSP_B
+'    TSP.SetPlayerPos TSP_First, TSP_ALL, TSP_Actual
+'    do
+'        p = TSP.GetDPlayer(TSP_3)
+'        if p > pts(0) then
+'            pts(2)   = pts(1)
+'            pts(1)   = pts(0)
+'            pts(0)   = p
+'            dress(2) = dress(1)
+'            dress(1) = dress(0)
+'            dress(0) = TSP.GetSPlayer(TSP_DRESS_NR)
+'        elseif p > pts(1) then
+'            pts(2)   = pts(1)
+'            pts(1)   = p
+'            dress(2) = dress(1)
+'            dress(1) = TSP.GetSPlayer(TSP_DRESS_NR)
+'        elseif p > pts(2) then
+'            pts(2)   = p
+'            dress(2) = TSP.GetSPlayer(TSP_DRESS_NR)
+'        end if
+'    loop while TSP.SetPlayerPos(TSP_Next, TSP_ALL, TSP_Actual)
+'
+'    for i = 0 to 6
+'        if pts(i) > 0 then
+'            tw_topscorer.ComponentByName("ed_pts"  & 2*i+2).Text = pts(i)
+'            tw_topscorer.ComponentByName("ed_rank" & 2*i+2).Text = ""  ' TODO <--- HIER KANN NOCH WAS REIN.... nur was
+'            tw_topscorer.ComponentByName("cb_name" & 2*i+2).Text = tsp.GetPlayerByNR(TSP_HPlayer, dress(i), TSP_Actual, "FIRST_NAME") & " " & tsp.GetPlayerByNR(TSP_HPlayer, dress(i), TSP_Actual, "SECOND_NAME")
+'        else
+'            tw_topscorer.ComponentByName("ed_pts"  & 2*i+2).Text = ""
+'            tw_topscorer.ComponentByName("ed_rank" & 2*i+2).Text = ""
+'            tw_topscorer.ComponentByName("cb_name" & 2*i+2).Text = ""
+'        end if
+'    next
+'
+'    TSP.RestoreSelection
 
 
     tw_topscorer.lbl_name1.Caption = SHORTNAME_A

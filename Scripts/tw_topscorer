@@ -182,5 +182,49 @@ sub tw_topscorer_ed_rank1Change (Sender)
 
 end sub
 
+sub tw_topscorer_bt_importClick (Sender)
+    dim leader,file,data,values,val,i
+    leader=tw_topscorer.cb_headline.Text
+    select case(leader)
+        case "Topscorer"
+            file="D:\LDPoints.txt"
+        case "Points"
+            file="D:\LDPoints.txt"
+        case "Rebounds"
+            file="D:\LDRebounds.txt"
+        case "Assits"
+            file="D:\LDAssists.txt"
+        case "Blocks"
+            file="D:\LDBlocks.txt"
+    end select
+    if file="" then exit sub
+    for i = 0 to 6
+        tw_topscorer.ComponentByName("ed_pts"  & 2*i+1).Text = ""
+        tw_topscorer.ComponentByName("ed_rank" & 2*i+1).Text = ""
+        tw_topscorer.ComponentByName("cb_name" & 2*i+1).Text = ""
+        tw_topscorer.ComponentByName("ed_pts"  & 2*i+2).Text = ""
+        tw_topscorer.ComponentByName("ed_rank" & 2*i+2).Text = ""
+        tw_topscorer.ComponentByName("cb_name" & 2*i+2).Text = ""
+    next
+    data=cc.Strings.LoadFromFileWithEncoding(file,UTF8,false)
+    if data<> "" then
+        cc.Strings.StringsObj.Clear
+        cc.Strings.StringsObj.CommaText=data
+        for i = 0 to 4
+            values=cc.Strings.StringsObj.Values((i+1)&".")
+            'cc.sf.DebugText values
+            if instr(values,";")>0 then
+                val=split(values,";")
+                tw_topscorer.ComponentByName("ed_pts"  & 2*i+1).Text=val(2)
+                tw_topscorer.ComponentByName("cb_name" & 2*i+1).Text = tsp.GetPlayerByNR(TSP_HPlayer, val(1), "A", "FIRST_NAME") & " " & tsp.GetPlayerByNR(TSP_HPlayer, val(1), "A", "SECOND_NAME")
+                if Trim(tw_topscorer.ComponentByName("cb_name" & 2*i+1).Text)="" then  tw_topscorer.ComponentByName("cb_name" & 2*i+1).Text=Replace(val(0),"_"," ")
+                tw_topscorer.ComponentByName("ed_pts"  & 2*i+2).Text=val(5)
+                tw_topscorer.ComponentByName("cb_name" & 2*i+2).Text = tsp.GetPlayerByNR(TSP_HPlayer, val(4), "B", "FIRST_NAME") & " " & tsp.GetPlayerByNR(TSP_HPlayer, val(4), "B", "SECOND_NAME")
+                if trim(tw_topscorer.ComponentByName("cb_name" & 2*i+2).Text)="" then  tw_topscorer.ComponentByName("cb_name" & 2*i+2).Text=Replace(val(3),"_"," ")
+            end if
+        next
+    end if
+end sub
+
 </script_body>
 </script>

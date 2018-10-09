@@ -1,0 +1,5 @@
+1.=D._Friedrich;6;10;M._Car;7;5,
+2.=E._Murati;4;7;E._Sürums;10;2,
+3.=T._Blazan;10;5;L._Qollaku;8;2,
+4.=S._Kasparet;19;4;M._Spaleta;15;2,
+5.=C._Murray;3;4;D._Heuberger;5;1,
