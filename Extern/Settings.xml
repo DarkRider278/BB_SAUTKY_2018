@@ -46,4 +46,5 @@
     <string>Assists</string>
     <string>Blocks</string>
   </LeaderName>
+  <SavePath>d:\</SavePath>
 </Settings>
