@@ -1,13 +1,13 @@
 <?xml version="1.0"?>
 <Settings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <WebStats>http://www.fibalivestats.com/u/OEBL/931390/st.html</WebStats>
-  <WebLeader>http://www.fibalivestats.com/u/OEBL/931390/lds.html</WebLeader>
+  <WebStats>http://www.fibalivestats.com/u/OEBL/931390/bs_en_AU.html</WebStats>
+  <WebLeader />
   <WebStatId>
-    <string>FieldGoalsMade</string>
-    <string>TwoPointersMade</string>
-    <string>ThreePointersMade</string>
-    <string>FreeThrowsMade</string>
-    <string>ReboundsTotal</string>
+    <string>FieldGoalsMade#FieldGoalsAttempted</string>
+    <string>TwoPointersMade#TwoPointersAttempted</string>
+    <string>ThreePointersMade#ThreePointersAttempted</string>
+    <string>FreeThrowsMade#FreeThrowsAttempted</string>
+    <string>ReboundsTotal#ReboundsOffensive#ReboundsDefensive</string>
     <string>Assists</string>
     <string>Steals</string>
     <string>Blocks</string>
