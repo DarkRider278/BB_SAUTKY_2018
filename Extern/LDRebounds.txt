@@ -1,5 +1,0 @@
-1.=T._Brummitt;17;11;M._Spaleta;15;10,
-2.=E._Murati;4;9;F._Mileta;14;5,
-3.=D._Friedrich;6;4;D._Heuberger;5;4,
-4.=C._Murray;3;3;I._Alisic;6;3,
-5.=D._White;5;3;M._Car;7;3,

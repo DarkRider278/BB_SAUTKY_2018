@@ -210,7 +210,7 @@ sub tw_topscorer_bt_importClick (Sender)
     if data<> "" then
         cc.Strings.StringsObj.Clear
         cc.Strings.StringsObj.CommaText=data
-        for i = 0 to 4
+        for i = 0 to 6
             values=cc.Strings.StringsObj.Values((i+1)&".")
             'cc.sf.DebugText values
             if instr(values,";")>0 then

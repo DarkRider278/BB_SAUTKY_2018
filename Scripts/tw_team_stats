@@ -197,7 +197,7 @@ sub tw_team_stats_Grid1MouseUp (Sender, Button, Shift, X, Y)
 end sub
 
 sub tw_team_stats_bt_importClick (Sender)
-    dim data,stat,values ,i
+    dim data,stat,values ,i,tmp
     data=cc.Strings.LoadFromFile("d:\BBSTAT.txt",false)
     if data<> "" then
         cc.Strings.StringsObj.Clear
@@ -213,8 +213,11 @@ sub tw_team_stats_bt_importClick (Sender)
                 tw_team_stats.Grid1.Cells(i,3)=0
                 tw_team_stats.Grid1.Cells(i,5)=0
             end if
-            if instr(tw_team_stats.Grid1.Cells(i,3), "/") then
-                dim tmp
+            if instr(tw_team_stats.Grid1.Cells(i,3), "#") then
+                tmp = split(tw_team_stats.Grid1.Cells(i,3), "#")
+                tw_team_stats.Grid1.Cells(i,3)=tmp(0)
+                tw_team_stats.Grid1.Cells(i,2)=tmp(1)
+            elseif instr(tw_team_stats.Grid1.Cells(i,3), "/") then
                 tmp = split(tw_team_stats.Grid1.Cells(i,3), "/")
                 if UBound(tmp) = 1 then
                     if isNumeric(tmp(0)) and IsNumeric(tmp(1)) then
@@ -231,10 +234,15 @@ sub tw_team_stats_bt_importClick (Sender)
                 else
                     tw_team_stats.Grid1.Cells(i,2) = ""
                 end if
+
             else
                 'Sender.Cells(Sender.row, target) = ""
             end if
-            if instr(tw_team_stats.Grid1.Cells(i,5), "/") then
+             if instr(tw_team_stats.Grid1.Cells(i,5), "#") then
+                tmp = split(tw_team_stats.Grid1.Cells(i,5), "#")
+                tw_team_stats.Grid1.Cells(i,5)=tmp(0)
+                tw_team_stats.Grid1.Cells(i,6)=tmp(1)
+            elseif instr(tw_team_stats.Grid1.Cells(i,5), "/") then
                 tmp = split(tw_team_stats.Grid1.Cells(i,5), "/")
                 if UBound(tmp) = 1 then
                     if isNumeric(tmp(0)) and IsNumeric(tmp(1)) then
