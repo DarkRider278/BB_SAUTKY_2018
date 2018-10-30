@@ -216,10 +216,12 @@ sub tw_topscorer_bt_importClick (Sender)
             if instr(values,";")>0 then
                 val=split(values,";")
                 tw_topscorer.ComponentByName("ed_pts"  & 2*i+1).Text=val(2)
-                tw_topscorer.ComponentByName("cb_name" & 2*i+1).Text = tsp.GetPlayerByNR(TSP_HPlayer, val(1), "A", "FIRST_NAME") & " " & tsp.GetPlayerByNR(TSP_HPlayer, val(1), "A", "SECOND_NAME")
+                tw_topscorer.ComponentByName("cb_name" & 2*i+1).Text=""
+                if isnumeric(val(1)) then tw_topscorer.ComponentByName("cb_name" & 2*i+1).Text = tsp.GetPlayerByNR(TSP_HPlayer, val(1), "A", "FIRST_NAME") & " " & tsp.GetPlayerByNR(TSP_HPlayer, val(1), "A", "SECOND_NAME")
                 if Trim(tw_topscorer.ComponentByName("cb_name" & 2*i+1).Text)="" then  tw_topscorer.ComponentByName("cb_name" & 2*i+1).Text=Replace(val(0),"_"," ")
                 tw_topscorer.ComponentByName("ed_pts"  & 2*i+2).Text=val(5)
-                tw_topscorer.ComponentByName("cb_name" & 2*i+2).Text = tsp.GetPlayerByNR(TSP_HPlayer, val(4), "B", "FIRST_NAME") & " " & tsp.GetPlayerByNR(TSP_HPlayer, val(4), "B", "SECOND_NAME")
+                tw_topscorer.ComponentByName("cb_name" & 2*i+2).Text =""
+                if isnumeric(val(4)) then tw_topscorer.ComponentByName("cb_name" & 2*i+2).Text = tsp.GetPlayerByNR(TSP_HPlayer, val(4), "B", "FIRST_NAME") & " " & tsp.GetPlayerByNR(TSP_HPlayer, val(4), "B", "SECOND_NAME")
                 if trim(tw_topscorer.ComponentByName("cb_name" & 2*i+2).Text)="" then  tw_topscorer.ComponentByName("cb_name" & 2*i+2).Text=Replace(val(3),"_"," ")
             end if
         next
