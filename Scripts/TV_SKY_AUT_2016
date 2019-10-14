@@ -180,6 +180,15 @@ Class cls__TV_VIZ_SKY_AUSTRIA_2013
             SetVizData "0002",0
         end if
     end sub
+    
+     public sub SetSublineOnOff()
+        if pg_table.cb_skylogo.Checked then
+            SetVizData "9010",1
+        else
+            SetVizData "9010",0
+            SetVizData "9000",""
+        end if
+    end sub
 
     public sub SetIBSide()
         if pgMain.cb_ib_right.Checked = true then
@@ -702,7 +711,7 @@ Class cls__TV_VIZ_SKY_AUSTRIA_2013
         sScene = "VB_Topscorer"
         LoadScene elMainLayer, sScene
         SetBGOnOff
-        
+        SetSublineOnOff
         SetTeamLogo "0090", LCase(Data.Item("LOGO_A"))
         SetTeamLogo "0190", LCase(Data.Item("LOGO_B"))
         SetVizDataUpper "0100", Data.Item("TEAM_A")
@@ -1224,6 +1233,7 @@ end sub
         if Data.Item("AS_INFOBOX") = true then
         else
             SetBGOnOff
+            SetSublineOnOff
         end if
 
         for i = 1 to 5
@@ -1430,6 +1440,7 @@ end sub
         LoadScene elMainLayer, sScene
         SetBGOnOff
         SetShow
+        SetSublineOnOff
         SetTitelDefaultHeader
         SetTitle Data.item("HEAD_TITLE")
         SetTitleSubLine Data.item("TITLE")
@@ -1469,14 +1480,14 @@ end sub
                 for i = 1 to 11
                     if     (i < 9) then  ' Grunddurchgang -> Die ersten 6 werden H1
                         'buffer = buffer & "1  SCENE*" & s__VizPath & "/" & sScene & "*TREE*$" & sCont & "$obj_Hgd_Rang*MATERIAL*EMISSION SET " & 90/255 & " " & 4 / 255 & " " & 16 / 255 & vbNullChar
-                        SetVizData ids+8 ,1
+                        'SetVizData ids+8 ,1
                     'elseif i<7 then
                     '    SetVizData ids+8 ,3
                     'elseif i<8 then
                     '    SetVizData ids+8 ,0
                     else
                         'buffer = buffer & "1  SCENE*" & s__VizPath & "/" & sScene & "*TREE*$" & sCont & "$obj_Hgd_Rang*MATERIAL*EMISSION SET " & 72/255 & " " & 72 / 255 & " " & 72 / 255 & vbNullChar
-                        SetVizData ids+8 ,5
+                        'SetVizData ids+8 ,5
                     end if
                     ids=ids+100
                 next
@@ -1608,6 +1619,7 @@ end sub
         LoadScene elMainLayer, sScene
         
         SetBGOnOff
+        SetSublineOnOff
         SetTitle Data.item("TITLE")
         SetTitleSubLine Data.item("SUBTITLE")
         SetDropLine ""
@@ -1718,6 +1730,7 @@ end sub
         LoadScene elMainLayer, sScene
         SetShow
         SetBGOnOff
+        SetSublineOnOff
         SetTitelDefaultHeader
         SetTitle Data.Item("TITLE")
         SetTitleSubLine ""
@@ -1773,6 +1786,7 @@ end sub
         LoadScene elMainLayer, sScene
 
         SetBGOnOff
+        SetSublineOnOff
         SetTitleLogo "",false
         SetTeamLogo "0060" ,LCase(Data.Item("LOGO1") )
         SetTeamLogo "0070" ,LCase(Data.Item("LOGO2"))
@@ -1952,6 +1966,7 @@ end sub
 
         SetBGOnOff
         SetShow
+        SetSublineOnOff
         SetVizData "0085",0
 
         SetTitle Data.item("OPT_TITLE")
@@ -2026,6 +2041,7 @@ end sub
 
         SetBGOnOff
         SetShow
+        SetSublineOnOff
         SetVizData "0085",0
 
         SetTitle Data.item("OPT_TITLE")
@@ -2146,6 +2162,7 @@ end sub
 
         SetShow
         SetBGOnOff
+        SetSublineOnOff
         SetTitelDefaultHeader
         SetTitle Data.Item("TITLE")
         SetTitleSubLine Data.Item("SUBTITLE")

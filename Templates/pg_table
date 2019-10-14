@@ -879,7 +879,7 @@ object pg_table: TccTabSheet
     Left = 975
     Top = 10
     Width = 226
-    Height = 136
+    Height = 176
     BevelOuter = bvNone
     Color = 3289650
     Locked = False
@@ -1468,10 +1468,31 @@ object pg_table: TccTabSheet
       Locked = False
       EventDataNames = 'OnClick=pgMain_bt_Winclk_UDP_SettingClick'
     end
+    object cb_skylogo: TptCheckBox
+      Left = 10
+      Top = 144
+      Width = 186
+      Height = 17
+      Caption = 'Skylogo an?'
+      Checked = True
+      Color = 3289650
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWhite
+      Font.Height = -11
+      Font.Name = 'MS Sans Serif'
+      Font.Style = []
+      ParentColor = False
+      ParentFont = False
+      State = cbChecked
+      TabOrder = 4
+      Locked = False
+      ColorFocused = 3289650
+      ColorMouseOver = 3289650
+    end
   end
   object bt_highlight: TptButton
     Left = 1095
-    Top = 255
+    Top = 305
     Width = 100
     Height = 25
     Caption = 'Highlights'
@@ -1720,7 +1741,7 @@ object pg_table: TccTabSheet
   end
   object bt_crawl: TptButton
     Left = 1095
-    Top = 220
+    Top = 270
     Width = 100
     Height = 25
     Caption = 'Crawl'
@@ -1969,7 +1990,7 @@ object pg_table: TccTabSheet
   end
   object bt_Opening: TptButton
     Left = 980
-    Top = 255
+    Top = 305
     Width = 100
     Height = 25
     Caption = 'Spiel Beginn BB'
@@ -2218,7 +2239,7 @@ object pg_table: TccTabSheet
   end
   object bt_tv_aufstellung_crawl: TptButton
     Left = 1095
-    Top = 190
+    Top = 240
     Width = 100
     Height = 25
     Hint = 'Links = Normal ; Rechts = 2x '
@@ -2435,7 +2456,7 @@ object pg_table: TccTabSheet
   end
   object bt_Ending: TptButton
     Left = 980
-    Top = 160
+    Top = 210
     Width = 100
     Height = 25
     Caption = 'Spiel Endstand'
@@ -2684,7 +2705,7 @@ object pg_table: TccTabSheet
   end
   object bt_tv_aufstellung_box: TptButton
     Left = 1095
-    Top = 160
+    Top = 210
     Width = 100
     Height = 25
     Caption = 'StartingV Box'
@@ -2933,7 +2954,7 @@ object pg_table: TccTabSheet
   end
   object bt_tvTipp: TptButton
     Left = 1095
-    Top = 290
+    Top = 340
     Width = 100
     Height = 25
     Caption = 'SendeHinweis'
@@ -3182,7 +3203,7 @@ object pg_table: TccTabSheet
   end
   object bt_RefereeBB: TptButton
     Left = 980
-    Top = 220
+    Top = 270
     Width = 100
     Height = 25
     Caption = 'Referee BB'
@@ -3431,7 +3452,7 @@ object pg_table: TccTabSheet
   end
   object bt_standings2: TptButton
     Left = 981
-    Top = 290
+    Top = 340
     Width = 100
     Height = 36
     Caption = 'VB STANDING 2er'
@@ -3680,7 +3701,7 @@ object pg_table: TccTabSheet
   end
   object bt_quiz: TptButton
     Left = 980
-    Top = 190
+    Top = 240
     Width = 100
     Height = 25
     Caption = 'Quiz'
